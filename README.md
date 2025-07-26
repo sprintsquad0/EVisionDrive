@@ -93,7 +93,11 @@ http://127.0.0.1:5000
 
 ## 👨‍💻 Developed By
 
-- Shaik Umar (Lead Developer)
+- Umar Althaf (Team Lead)
+- Rahim
+- Vicky
+- Kanchana
+- Sri Vidya
 
 ---
 
