@@ -49,8 +49,8 @@ E-Vision Drive Is A Smart And Intelligent Driving Assistant System Built With Co
 
 1. **Clone the Repository**
 ```bash
-git clone https://github.com/your-username/e-vision-drive.git
-cd e-vision-drive
+git clone https://github.com/sprintsquad0/EVisionDrive.git
+cd EVisionDrive
 ```
 
 2. **Install Requirements**
