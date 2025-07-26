@@ -33,7 +33,7 @@ E-Vision Drive Is A Smart And Intelligent Driving Assistant System Built With Co
   - Station List With Maps And Service No.
   - RealTime OTP Verification
 - Mobile-friendly hamburger menu.
-- Booking section replaced with "Contact for booking" message.
+- Booking section With RealTime OTP Verification Of Mobile Number.
 
 ---
 
