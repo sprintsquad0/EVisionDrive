@@ -40,7 +40,7 @@ E-Vision Drive Is A Smart And Intelligent Driving Assistant System Built With Co
 ## 📁 Project Structure
 
 ```
-**Will Be Kept Soon**
+**Will Be Soon**
 ```
 
 ---
