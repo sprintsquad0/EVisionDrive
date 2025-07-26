@@ -17,17 +17,12 @@ E-Vision Drive Is A Smart And Intelligent Driving Assistant System Built With Co
 - Built using PYTTS.
 - Triggers warning or alerts for suspicious phrases.
 
-### 3. **Accident Alert System**
-- Monitors camera feed for blackouts or jerks.
-- Sends emergency alert (via email or SMS) in critical conditions.
-- Can be extended with sensor integration (accelerometer/GPS).
-
-### 4. **<50% Station Suggestion (Smart Safety Assistant)**
+### 3. **<50% Station Suggestion (Smart Safety Assistant)**
 - If the user agrees verbally (“Okay” command), it recommends the nearest safe station.
 - We Had Done The Full Stack Website Too With MEN Stack
 
-### 5. **Web Dashboard**
-- Clean and responsive single-page UI.
+### 4. **Web Dashboard**
+- Clean and responsive UI.
 - Displays:
   - Safety Authentication
   - Station List With Maps And Service No.
