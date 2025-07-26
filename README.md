@@ -72,24 +72,14 @@ http://127.0.0.1:5000
 
 ## 🧠 Tech Stack
 
-- **Python** – core logic and backend
-- **OpenCV** – face detection and camera monitoring
-- **NLP (Sklearn/TensorFlow)** – dowry detection
-- **Flask** – web server framework
-- **HTML, CSS, JS** – frontend
-- **Twilio / SMTP** – emergency alert system
+- **Python** – For Detections
+- **OpenCV** – Face Detection and Camera Monitoring
+- **HTML, CSS, JS** – Frontend
+- **MONGODB, EXPRESS JS, NODE JS** - Backend and Database 
+- **Twilio** – RealTime OTP
 
 ---
 
-## 🔮 Future Scope
-
-- Real-time fatigue or drowsiness detection
-- Voice command integration
-- Automatic trip log & report generation
-- AI-based driving behavior analysis
-- Multi-language safety assistant
-
----
 
 ## 👨‍💻 Developed By
 
