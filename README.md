@@ -107,9 +107,11 @@ This project is licensed under the MIT License and is meant for educational and 
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgment
 
-- OpenCV community
-- Scikit-learn / TensorFlow
-- Twilio API
-- Google Maps API
+I Would Like To Express My Sincere Gratitude To My Team Members For Their Dedication, Collaboration, And Continuous Support Throughout The Development Of The EVision Drive Project. Each Member Played A Vital Role In Bringing This Vision To Life.
+
+I Also Extend My Heartfelt Thanks To My Guide And Co-Ordinator For Their Valuable Guidance And Encouragement. Special Thanks To The Open-Source Community And Developers Of Tools Like OpenCV, Node.js, Express.js, And MongoDB, Which Empowered Us To Build This Intelligent Driving Assistant System.
+
+
+
