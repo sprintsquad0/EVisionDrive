@@ -1,1 +1,111 @@
-# EVisionDrive
+# 🚗 EVision Drive
+
+E-Vision Drive Is A Smart And Intelligent Driving Assistant System Built With Computer Vision And Men Stack, Designed To Ensure Safer, Smarter, And More Informed Driving Experiences. The System Combines Real-Time Surveillance, Detection Systems, And Smart Guidance Tools To Enhance Safety.
+
+
+---
+
+## 🌟 Features
+
+### 1. **Face Detection**
+- Uses OpenCV to detect the driver’s face via the camera.
+- Ensures presence and identifies the driver.
+- Future-ready for fatigue or emotion detection.
+
+### 2. **Dowry Demand Detection (NLP-based)**
+- Detects dowry-related phrases from spoken or typed input.
+- Built using PYTTS.
+- Triggers warning or alerts for suspicious phrases.
+
+### 3. **Accident Alert System**
+- Monitors camera feed for blackouts or jerks.
+- Sends emergency alert (via email or SMS) in critical conditions.
+- Can be extended with sensor integration (accelerometer/GPS).
+
+### 4. **<50% Station Suggestion (Smart Safety Assistant)**
+- If the user agrees verbally (“Okay” command), it recommends the nearest safe station.
+- We Had Done The Full Stack Website Too With MEN Stack
+
+### 5. **Web Dashboard**
+- Clean and responsive single-page UI.
+- Displays:
+  - Safety Authentication
+  - Station List With Maps And Service No.
+  - RealTime OTP Verification
+- Mobile-friendly hamburger menu.
+- Booking section replaced with "Contact for booking" message.
+
+---
+
+## 📁 Project Structure
+
+```
+**Will Be Kept Soon**
+```
+
+---
+
+## ⚙️ How to Run
+
+1. **Clone the Repository**
+```bash
+git clone https://github.com/your-username/e-vision-drive.git
+cd e-vision-drive
+```
+
+2. **Install Requirements**
+```bash
+pip install -r requirements.txt
+```
+
+3. **Run the App**
+```bash
+python app.py
+```
+
+4. **Open in Browser**
+```
+http://127.0.0.1:5000
+```
+
+---
+
+## 🧠 Tech Stack
+
+- **Python** – core logic and backend
+- **OpenCV** – face detection and camera monitoring
+- **NLP (Sklearn/TensorFlow)** – dowry detection
+- **Flask** – web server framework
+- **HTML, CSS, JS** – frontend
+- **Twilio / SMTP** – emergency alert system
+
+---
+
+## 🔮 Future Scope
+
+- Real-time fatigue or drowsiness detection
+- Voice command integration
+- Automatic trip log & report generation
+- AI-based driving behavior analysis
+- Multi-language safety assistant
+
+---
+
+## 👨‍💻 Developed By
+
+- Shaik Umar (Lead Developer)
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License and is meant for educational and safety research purposes only.
+
+---
+
+## 🙏 Acknowledgements
+
+- OpenCV community
+- Scikit-learn / TensorFlow
+- Twilio API
+- Google Maps API
