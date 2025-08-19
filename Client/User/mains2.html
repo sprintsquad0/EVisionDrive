@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Panel – EV</title>
+  <style>
+    :root {
+      --sidebar-width: 250px;
+      /*240*/
+      --bg-dark: #11192c;
+      --accent: #4caf50;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 0fr;
+      overflow: hidden;
+      background: var(--bg-dark);
+    }
+
+    iframe {
+      border: none;
+      height: 100vh;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100%;
+      z-index: 1000;
+    }
+
+    #main {
+      width: calc(100vw - var(--sidebar-width));
+
+    }
+
+    #hamburger {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 26px;
+      background: transparent;
+      color: #4eff4e;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 1100;
+    }
+
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 900;
+    }
+
+    #fixed-block {
+      display: flex;
+      color: #29d829;
+      margin: 10px 0 0 60px;
+      font-weight: bold;
+      font-size: 20px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #main-block {
+      backdrop-filter: blur(15px) saturate(136%);
+      -webkit-backdrop-filter: blur(15px) saturate(136%);
+      background-color: rgba(24, 65, 22, 0.35);
+      border-radius: 5px;
+      border: 1px solid rgba(209, 213, 219, 0.3);
+    }
+
+    /* MOBILE LAYOUT**/
+    @media (max-width:768px) {
+      body {
+        display: block;
+      }
+
+      #hamburger {
+        display: block;
+        font-size: 20px;
+      }
+
+      #sidebar {
+        left: -250px;
+        transition: left 0.3s ease;
+      }
+
+      #sidebar.open {
+        left: 0;
+      }
+
+      #main {
+        width: 100vw;
+        margin-left: 0;
+      }
+
+      #overlay.show {
+        display: block;
+      }
+
+      #fixed-block,
+      #main-block {
+        display: block;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="main-content" style="display: none;">
+    <div id="main-block">
+      <div id="fixed-block">
+        <p>USER PANEL</p>
+      </div>
+      <button id="hamburger">☰</button>
+    </div>
+
+    <div id="overlay"></div>
+</div>
+    <iframe id="sidebar" src="slidebar.html" name="sidebar"></iframe>
+    <iframe id="main" src="overview.html" name="main"></iframe>
+  
+  <script>
+
+    window.addEventListener("pageshow", function () {
+      const Username = localStorage.getItem("userUsername");
+      if (!Username) {
+        // Fast redirect if user is not logged in
+        location.replace("../auth.html");
+      } else {
+        // Only show content if logged in
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+
+    const iframe = document.getElementById("sidebar");
+
+    function sendScreenWidth() {
+      iframe.contentWindow.postMessage({ screenWidth: window.innerWidth }, "*");
+    }
+
+    // Send when iframe loads
+    iframe.onload = sendScreenWidth;
+
+    // Send again if screen resizes
+    window.onresize = sendScreenWidth;
+
+
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.getElementById("hamburger");
+    const overlay = document.getElementById("overlay");
+
+    function openSidebar() {
+      sidebar.classList.add("open");
+      overlay.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    hamburger.onclick = () => {
+      sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+    };
+
+    overlay.onclick = closeSidebar;
+
+    sidebar.onload = () => {
+      try {
+        const links = sidebar.contentDocument.querySelectorAll('a[target="main"]');
+        links.forEach(link => {
+          link.onclick = () => {
+            if (window.innerWidth <= 768) closeSidebar();
+          };
+        });
+      } catch (e) {
+        console.warn("Could not access iframe links due to cross-origin policy.");
+      }
+    };
+  </script>
+</body>
+
+</html>

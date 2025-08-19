@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>eVision - EV Charging Login</title>
+    <style>
+        #spinner {
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid #4caf50;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #0f0f0f;
+            color: white;
+        }
+
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 100vh;
+        }
+
+        .left-panel {
+            flex: 1 1 69%;
+            background: url('Images/bg1.png') no-repeat center/cover;
+            position: relative;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .branding {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border-radius: 16px;
+        }
+
+        .branding h1 {
+            font-size: 2.5rem;
+            color: #33ccff;
+        }
+
+        .branding p {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        .right-panel {
+            flex: 1 1 31%;
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .auth-box {
+            background: #1a1a1a;
+            padding: 30px 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            background: #0d0d0d;
+            border-radius: 30px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .tabs button {
+            flex: 1;
+            padding: 10px 0;
+            background: none;
+            border: none;
+            color: #ccc;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .tabs button.active {
+            background: #0af;
+            color: black;
+        }
+
+        .auth-box h2 {
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .auth-box p {
+            margin-bottom: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .auth-box label {
+            display: block;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            margin-bottom: 6px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 40px 12px 40px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            /* Glass-like */
+
+            color: rgb(244, 235, 192);
+            outline: none;
+
+        }
+
+
+
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            background: linear-gradient(to right, #00bfff, #00ff99);
+            border: none;
+            width: 100%;
+            padding: 12px;
+            color: black;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .signup-link {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .signup-link a {
+            color: #33ccff;
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #999;
+            padding: 20px 0;
+            background: #0d0d0d;
+        }
+
+        footer a {
+            margin: 0 10px;
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #39ff14;
+        }
+
+        @media (max-width: 768px) {
+            .left-panel {
+                display: none;
+            }
+
+            .right-panel {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <!-- Left Side -->
+        <div class="left-panel">
+            <div class="branding">
+                <h1>eVision</h1>
+                <p>Powering The Future Of Mobility</p>
+                <p>Seamlessly Connect With Intelligent EV Charging Stations Across Your Smart City. Reserve Your Slot In
+                    Real-Time, Charge Efficiently, And Drive Towards A Cleaner Tomorrow With eVision.</p>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="right-panel">
+            <div class="auth-box">
+                <div class="tabs">
+                    <button id="userTab" class="active" onclick="setTab('user')">👤 User</button>
+                    <button id="adminTab" onclick="setTab('admin')">🛡️ Admin</button>
+                </div>
+
+                <h2 id="accessTitle">User Access</h2>
+                <p>Access your eVision charging account</p>
+
+
+                <div id="accessCodeField" style="display:none;">
+                    <label>Access Code</label>
+                    <div class="input-group">
+                        <i>🗝</i>
+                        <input type="text" id="adminAccessCode" placeholder="Enter access code" autocomplete="off" />
+                    </div>
+                </div>
+
+                <form id="authForm">
+                    <div id="inputContainer"></div>
+                    <button type="submit" class="submit-btn">Sign In</button>
+                </form>
+                <div id="spinner" style="display:none;"></div>
+                <div class="signup-link" id="signupLinkContainer">
+                    Don't have an account? <a href="#" id="signupBtn">Sign Up</a>
+                </div>
+                <!-- Add this for switching back to login -->
+                <div class="signup-link" id="loginLinkContainer" style="display:none;">
+                    Already have an account? <a href="#" id="loginSwitchBtn">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 All rights reserved &nbsp;|&nbsp;
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Support</a>
+    </footer>
+    <script>
+        window.addEventListener("pageshow", function () {
+            if (localStorage.getItem("userUsername")) {
+                console.log("User is logged in:", localStorage.getItem("userUsername"));
+                window.location.href = "User/mains2.html";
+            } else if (localStorage.getItem("AdminUsername")) {
+                window.location.href = "Admin/mains2.html";
+            }
+        });
+
+        function preventBack() {
+            window.history.forward();
+        }
+        setTimeout(preventBack, 0);
+        window.onunload = function () { null };
+        let currentRole = "user";
+        let currentMode = "login";
+
+
+
+        const fieldConfigs = {
+            user: {
+                login: [
+                    { icon: "👤", type: "text", id: "username", name: "username", placeholder: "Enter Username" },
+                    { icon: "🔒", type: "password", id: "password", name: "password", placeholder: "Enter Password" }
+                ],
+                signup: [
+                    { icon: "👤", type: "text", id: "name", name: "name", placeholder: "Enter Full Name" },
+                    { icon: "📧", type: "email", id: "email", name: "email", placeholder: "Enter Email" },
+                    { icon: "📱", type: "tel", id: "phone", name: "phone", placeholder: "Enter Phone Number", maxlength: "10" },
+                    { icon: "👤", type: "text", id: "username", name: "username", placeholder: "Choose Username" },
+                    { icon: "🔒", type: "password", id: "password", name: "password", placeholder: "Create Password" }
+                ]
+            },
+            admin: {
+                login: [
+                    { icon: "👤", type: "text", id: "adminUsername", name: "adminUsername", placeholder: "Admin Username" },
+                    { icon: "🔒", type: "password", id: "adminPassword", name: "adminPassword", placeholder: "Admin Password" }
+                ],
+                signup: [
+                    { icon: "👤", type: "text", id: "adminName", name: "adminName", placeholder: "Enter Name" },
+                    { icon: "📧", type: "email", id: "adminEmail", name: "adminEmail", placeholder: "Enter Email" },
+                    { icon: "📱", type: "tel", id: "adminPhone", name: "adminPhone", placeholder: "Enter Phone", maxlength: "10" },
+                    { icon: "👤", type: "text", id: "adminUsername", name: "adminUsername", placeholder: "Create Username" },
+                    { icon: "🔒", type: "password", id: "adminPassword", name: "adminPassword", placeholder: "Create Password" }
+                ]
+            }
+        };
+
+        function renderFields() {
+            const inputContainer = document.getElementById("inputContainer");
+            inputContainer.innerHTML = "";
+
+            if (currentRole === "admin") {
+                const code = document.getElementById('adminAccessCode').value.trim();
+                if (code !== "TESTING") {
+                    document.querySelector(".submit-btn").style.display = "none";
+                    return;
+                }
+            }
+
+            document.querySelector(".submit-btn").style.display = "block";
+
+            const fields = fieldConfigs[currentRole][currentMode];
+            fields.forEach(field => {
+                const div = document.createElement("div");
+                div.className = "input-group";
+                const icon = document.createElement("i");
+                icon.textContent = field.icon;
+                const input = document.createElement("input");
+                input.type = field.type;
+                input.id = field.id;
+                input.name = field.name;
+                input.placeholder = field.placeholder;
+                if (field.maxlength) input.maxLength = field.maxlength;
+                input.required = true;
+                div.appendChild(icon);
+                div.appendChild(input);
+                inputContainer.appendChild(div);
+            });
+
+            document.querySelector(".submit-btn").textContent = currentMode === "login" ? "Sign In" : "Sign Up";
+        }
+
+        window.setTab = function (role) {
+            currentRole = role;
+            currentMode = "login";
+            document.getElementById('userTab').classList.toggle('active', role === 'user');
+            document.getElementById('adminTab').classList.toggle('active', role === 'admin');
+            document.getElementById('accessTitle').textContent = role === 'user' ? 'User Access' : 'Admin Access';
+            renderFields();
+            document.getElementById('accessCodeField').style.display = (role === 'admin') ? "block" : "none";
+            document.getElementById('signupLinkContainer').style.display = (role === 'admin') ? "none" : "block";
+            document.getElementById('loginLinkContainer').style.display = "none";
+        };
+
+        document.getElementById('adminAccessCode').addEventListener('input', function () {
+            const code = this.value.trim();
+            if (code === "TESTING") {
+                document.getElementById('signupLinkContainer').style.display = "block";
+            } else {
+                document.getElementById('signupLinkContainer').style.display = "none";
+                if (currentRole === "admin" && currentMode === "signup") {
+                    currentMode = "login";
+                    document.getElementById('loginLinkContainer').style.display = "none";
+                }
+            }
+            renderFields();
+        });
+
+        document.getElementById('signupBtn').onclick = function (e) {
+            e.preventDefault();
+            currentMode = "signup";
+            renderFields();
+            document.getElementById('signupLinkContainer').style.display = "none";
+            document.getElementById('loginLinkContainer').style.display = "block";
+        };
+
+        document.getElementById('loginSwitchBtn').onclick = function (e) {
+            e.preventDefault();
+            currentMode = "login";
+            renderFields();
+            document.getElementById('signupLinkContainer').style.display = "block";
+            document.getElementById('loginLinkContainer').style.display = "none";
+        };
+
+        renderFields();
+
+        document.getElementById("authForm").onsubmit = async function (e) {
+            e.preventDefault();
+            const spinner = document.getElementById("spinner");
+            spinner.style.display = "block";
+
+            try {
+                if (currentRole === "user" && currentMode === "login") {
+                    const uname = document.getElementById("username").value;
+                    const pass = document.getElementById("password").value;
+
+                    try {
+                        const response = await fetch("http://localhost:3000/userlogin", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ Username: uname, Password: pass })
+                        });
+
+                        const data = await response.json();
+                        localStorage.setItem("userUsername", data.username);
+                        if (response.ok) {
+                            document.getElementById("username").value = "";
+                            document.getElementById("password").value = "";
+                            spinner.style.display = "none";
+                            alert(`${uname} Logged Successfully`);
+                            window.location.href = "User/mains2.html";
+                        } else { //CSSCounterStyleRule
+                            alert(data.message)
+                        }
+                        /*
+                        const response = await fetch("http://localhost:3000/userlogin", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ Username: uname, Password: pass })
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                        localStorage.setItem("userUsername", data.username);
+                        alert(`${uname} Logged in successfully`);
+                        window.location.href = "User/mains2.html";
+                        } else {
+                        alert(data.message);
+                        }
+                    
+                        */
+
+
+
+                    } catch (err) {
+                        console.log(err)
+                    }
+
+
+                } else if (currentRole === "user" && currentMode === "signup") {
+                    console.log("BLOCK ENTERING SUCCESS")
+                    const name = document.getElementById("name").value;
+                    const email = document.getElementById("email").value;
+                    const phone = document.getElementById("phone").value;
+                    const uname = document.getElementById("username").value;
+                    const pass = document.getElementById("password").value;
+                    const response = await fetch("http://localhost:3000/userreg", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ Username: uname, Password: pass, Phone: phone, Mail: email, Name: name })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        localStorage.setItem("userUsername", data.username);
+                        alert("User Registered Successfully");
+                        currentMode = "login";
+                        renderFields();
+                    } else {
+                        alert(data.message || "Signup failed");
+                    }
+                } else if (currentRole === "admin" && currentMode === "signup") {
+                    console.log("BLOCK ENTERING SUCCESS")
+                    const pass = document.getElementById("adminPassword").value;
+                    const uname = document.getElementById("adminUsername").value;
+                    const phone = document.getElementById("adminPhone").value;
+                    const mail = document.getElementById("adminEmail").value;
+                    const names = document.getElementById("adminName").value;
+
+                    /*
+                    if (pass !== "TESTING") {
+                        alert("Check Your Password Admin!!");
+                        return;
+                    }
+                        */
+
+                    const response = await fetch("http://localhost:3000/adminreg", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ Username: uname, Password: pass, Mail: mail, Phone: phone, Name: names })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        localStorage.setItem("AdminUsername", data.username);
+                        alert(`Admin: ${uname} Registered Successfully`);
+                        window.location.href = "Admin/mains2.html";
+                    } else {
+                        alert(data.message || "Signup failed");
+                    }
+                } else if (currentRole === "admin" && currentMode === "login") {
+                    const pass = document.getElementById("adminPassword").value;
+                    const uname = document.getElementById("adminUsername").value;
+                    const response = await fetch("http://localhost:3000/adminlogin", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ Username: uname, Password: pass })
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem("AdminUsername", data.username);
+                        alert(`${uname} Logged Successfully`);
+                        window.location.href = "Admin/mains2.html";
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred.");
+            } finally {
+                spinner.style.display = "none";
+            }
+        };
+    </script>
+
+
+</body>
+
+</html>

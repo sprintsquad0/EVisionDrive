@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #f0f0f0;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      font-size: 26px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding-bottom: 10px;
+    }
+
+    #userPanel {
+      color: #58f758;
+      border-bottom: 2px solid #58f758;
+    }
+
+    #wel {
+      display: none;
+      color: #ffffff;
+      border-bottom: 2px solid #ffffff;
+    }
+
+    div {
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      background-color: rgba(25, 25, 25, 0.35);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      max-width: 300px;
+      margin: 0 auto;
+      height:200px;
+    }
+
+    a {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(72, 239, 180, 0.12);
+      color: #e0ffe7;
+      padding: 14px 20px;
+      text-decoration: none;
+      margin: 12px 0;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(120, 255, 182, 0.2);
+    }
+
+    a span:last-child {
+      font-size: 18px;
+    }
+
+    a:hover {
+      background: rgba(72, 239, 180, 0.3);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 10px rgba(95, 255, 161, 0.8);
+    }
+
+    @media (max-width: 768px) {
+      div {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        padding: 25px 15px;
+        height: 790px;/*734*/
+      }
+
+      a {
+        width: 180px;
+        font-size: 14px;
+        padding: 10px 12px;
+      }
+
+      h2 {
+        font-size: 24px;
+        letter-spacing: 1px;
+        border-bottom: none;
+      }
+
+      #userPanel {
+        display: none;
+      }
+
+      #wel {
+        display: block;
+        border-bottom: 2px solid #58f758;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <h2 id="userPanel">User Panel</h2>
+    <h2 id="wel">Welcome</h2>
+
+    <a href="overview.html" target="main"><span>Overview</span><span>📊</span></a>
+    <a href="stations.html" target="main"><span>Stations</span><span>🚉</span></a>
+    <a href="booking.html" target="main"><span>Booking</span><span>📝</span></a>
+    <a href="profile.html" target="main"><span>Profile</span><span>👤</span></a>
+    <a href="about.html" target="main"><span>About</span><span>ℹ️</span></a>
+  </div>
+
+  <script>
+    window.addEventListener("message", function (event) {
+      const screenWidth = event.data.screenWidth;
+      const userPanel = document.getElementById("userPanel");
+      const welcome = document.getElementById("wel");
+
+      if (screenWidth <= 768) {
+        userPanel.style.display = "none";
+        welcome.style.display = "block";
+      } else {
+        userPanel.style.display = "block";
+        welcome.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

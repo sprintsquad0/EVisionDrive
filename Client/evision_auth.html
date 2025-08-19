@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>eVision Authentication</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .auth-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      color: #1976d2;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .input-group {
+      position: relative;
+      margin-top: 0.5rem;
+    }
+    .input-group i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .submit-btn {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #1976d2;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .signup-link {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .signup-link a {
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2 id="accessTitle">User Access</h2>
+    <form id="loginForm">
+      <label>Username</label>
+      <div class="input-group">
+        <i>👤</i>
+        <input type="text" id="username" placeholder="Enter your username" required />
+      </div>
+
+      <label>Password</label>
+      <div class="input-group">
+        <i>🔒</i>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
+
+      <!-- Sign-up only fields -->
+      <div id="signupFields" style="display: none;">
+        <label>Full Name</label>
+        <div class="input-group">
+          <i>🧾</i>
+          <input type="text" id="names" placeholder="Enter your full name" />
+        </div>
+
+        <label>Email</label>
+        <div class="input-group">
+          <i>📧</i>
+          <input type="email" id="mail" placeholder="Enter your email" />
+        </div>
+
+        <label>Phone</label>
+        <div class="input-group">
+          <i>📞</i>
+          <input type="tel" id="tel" placeholder="Enter your phone number" />
+        </div>
+      </div>
+
+      <!-- Admin only access code -->
+      <div id="accessCodeField" style="display:none;">
+        <label>Access Code</label>
+        <div class="input-group">
+          <i>🗝️</i>
+          <input type="text" id="accessCode" placeholder="Enter access code" />
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Sign In</button>
+    </form>
+
+    <div class="signup-link">
+      Don't have an account? <a href="#" onclick="toggleMode()">Sign Up</a>
+    </div>
+  </div>
+
+  <script>
+    let currentMode = "login";
+    let currentRole = "user";
+
+    function toggleMode() {
+      currentMode = currentMode === "login" ? "signup" : "login";
+      const formTitle = document.getElementById("accessTitle");
+      const signupFields = document.getElementById("signupFields");
+      const submitBtn = document.querySelector(".submit-btn");
+      const linkText = document.querySelector(".signup-link a");
+
+      if (currentMode === "signup") {
+        signupFields.style.display = "block";
+        submitBtn.textContent = "Sign Up";
+        linkText.textContent = "Already have an account? Log In";
+        formTitle.textContent = currentRole === "admin" ? "Admin Sign Up" : "User Sign Up";
+      } else {
+        signupFields.style.display = "none";
+        submitBtn.textContent = "Sign In";
+        linkText.textContent = "Don't have an account? Sign Up";
+        formTitle.textContent = currentRole === "admin" ? "Admin Access" : "User Access";
+      }
+    }
+  </script>
+</body>
+</html>

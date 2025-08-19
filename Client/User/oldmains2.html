@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>eVision - EV Charging Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: white;
+    }
+
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      min-height: 100vh;
+    }
+
+    .left-panel {
+      flex: 1 1 55%;
+      background: url('bg.jpg') no-repeat center center/cover;
+      position: relative;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .branding {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 40px;
+      border-radius: 16px;
+    }
+
+    .branding h1 {
+      font-size: 2.5rem;
+      color: #33ccff;
+    }
+
+    .branding p {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #ddd;
+    }
+
+    .right-panel {
+      flex: 1 1 45%;
+      background-color: #121212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .auth-box {
+      background: #1a1a1a;
+      padding: 30px 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-between;
+      background: #0d0d0d;
+      border-radius: 30px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 10px 0;
+      background: none;
+      border: none;
+      color: #ccc;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .tabs button.active {
+      background: #0af;
+      color: black;
+    }
+
+    .auth-box h2 {
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
+
+    .auth-box p {
+      margin-bottom: 20px;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .auth-box label {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 15px;
+      margin-bottom: 6px;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 40px 12px 40px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: white;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+    }
+
+    .submit-btn {
+      margin-top: 20px;
+      background: linear-gradient(to right, #00bfff, #00ff99);
+      border: none;
+      width: 100%;
+      padding: 12px;
+      color: black;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .signup-link {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .signup-link a {
+      color: #33ccff;
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
+      padding: 20px 0;
+      background: #0d0d0d;
+    }
+
+    footer a {
+      margin: 0 10px;
+      color: #bbb;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #39ff14;
+    }
+
+    @media (max-width: 768px) {
+      .left-panel {
+        display: none;
+      }
+
+      .right-panel {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <!-- Left Side -->
+  <div class="left-panel">
+    <div class="branding">
+      <h1>eVision</h1>
+      <p>The Future of EV Charging</p>
+      <p>Connect to smart charging stations across the city. Book your slot, charge sustainably, and drive the future.</p>
+    </div>
+  </div>
+
+  <!-- Right Side -->
+  <div class="right-panel">
+    <div class="auth-box">
+      <div class="tabs">
+        <button id="userTab" class="active" onclick="setTab('user')">👤 User</button>
+        <button id="adminTab" onclick="setTab('admin')">🛡️ Admin</button>
+      </div>
+
+      <h2 id="accessTitle">User Access</h2>
+      <p>Access your eVision charging account</p>
+
+      <form id="loginForm">
+        <label>Email</label>
+        <div class="input-group">
+          <i>📧</i>
+          <input type="email" placeholder="Enter your email" required />
+        </div>
+
+        <label>Password</label>
+        <div class="input-group">
+          <i>🔒</i>
+          <input type="password" placeholder="Enter your password" required />
+        </div>
+
+        <div id="accessCodeField" style="display:none;">
+          <label>Access Code</label>
+          <div class="input-group">
+            <i>🗝️</i>
+            <input type="text" placeholder="Enter access code" />
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+
+      <div class="signup-link">
+        Don't have an account? <a href="#">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2024 All rights reserved &nbsp;|&nbsp;
+  <a href="#">Terms of Service</a>
+  <a href="#">Privacy Policy</a>
+  <a href="#">Support</a>
+</footer>
+
+<script>
+  function setTab(role) {
+    const userTab = document.getElementById('userTab');
+    const adminTab = document.getElementById('adminTab');
+    const title = document.getElementById('accessTitle');
+    const accessCode = document.getElementById('accessCodeField');
+
+    if (role === 'user') {
+      userTab.classList.add('active');
+      adminTab.classList.remove('active');
+      title.textContent = 'User Access';
+      accessCode.style.display = 'none';
+    } else {
+      adminTab.classList.add('active');
+      userTab.classList.remove('active');
+      title.textContent = 'Admin Access';
+      accessCode.style.display = 'block';
+    }
+  }
+</script>
+
+</body>
+</html>
