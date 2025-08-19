@@ -13,6 +13,9 @@ import cors from "cors";
 import path from "path";
 app.use(cors({ origin: "http://127.0.0.1:5500" }));
 import twilio from "twilio"
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -382,7 +385,7 @@ app.get("/user/userdetails", async (req, res) => {
 
 
 //BOOKING OTP
-require("dotenv").config();
+//require("dotenv").config();
 //process.env.TWILIO_PHONE_NUMBER;
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
