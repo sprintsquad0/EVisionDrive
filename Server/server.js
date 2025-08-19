@@ -22,8 +22,10 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.json());
 
+const mongoURI = process.env.MONGO_URI;
+
 mongoose
-  .connect("mongodb+srv://deepcoders0:ewGQpK7TFo40ITVN@deepviber03.vlc9q.mongodb.net/EV_RECHARGE")////newdb
+  .connect(mongoURI)////newdb
   .then(() => {
     console.log("CONNECTED SUCCESSFULLY");
   })

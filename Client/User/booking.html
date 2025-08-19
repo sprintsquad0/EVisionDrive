@@ -148,6 +148,13 @@
   <script>
     let countdown;
 
+    // Variable declarations
+    const otpBtn = document.getElementById("otp-btn");
+    const otpSection = document.getElementById("otp-section");
+    const timer = document.getElementById("timer");
+    const form = document.querySelector("form");
+    const otpInput = document.getElementById("otp-value");
+
     // Fetch available slots when date changes
     document.getElementById("booking-date").addEventListener("change", fetchAvailableSlots);
 
@@ -172,31 +179,24 @@
         slotDropdown.innerHTML = `<option disabled selected>Choose Your Slot...!</option>`;
 
         const now = new Date();
-        const today = new Date().toISOString().split("T")[0];
-        const day = today.split("-")[2]
-        const year = today.split("-")[0]
-        const month = today.split("-")[1]
+        const today = now.toISOString().split("T")[0];
+        const selectedDay = new Date(date).toISOString().split("T")[0];
 
         allSlots.forEach(slot => {
-          const [start] = slot.split(" ~ "); // take only start time
+          const [start] = slot.split(" ~ ");
           const match = start.match(/(\d+):(\d+)\s*(AM|PM)/);
 
-          if (!match) return; // skip if format invalid
+          if (!match) return;
 
           let slotHour = parseInt(match[1], 10);
           let slotMinutes = parseInt(match[2], 10);
           const ampm = match[3];
 
-          // Convert to 24-hour time
           if (ampm === "PM" && slotHour !== 12) slotHour += 12;
           if (ampm === "AM" && slotHour === 12) slotHour = 0;
 
           const slotDateTime = new Date(date);
           slotDateTime.setHours(slotHour, slotMinutes, 0, 0);
-
-          const now = new Date();
-          const today = now.toISOString().split("T")[0];
-          const selectedDay = new Date(date).toISOString().split("T")[0];
 
           // Skip past dates
           if (selectedDay < today) return;
@@ -215,6 +215,8 @@
         console.log("Error fetching slots:", err);
       }
     }
+
+    // OTP Button click handler
     otpBtn.addEventListener("click", async () => {
       const phoneInput = document.querySelectorAll(".co")[1];
       let phone = phoneInput.value.trim();
@@ -253,8 +255,28 @@
       }
     });
 
+    // OTP Timer function
+    function startOtpTimer() {
+      let timeLeft = 60;
+      otpSection.style.display = "block";
+      otpBtn.disabled = true;
+      timer.textContent = `You have ${timeLeft}s to enter OTP`;
+      otpBtn.style.display = "none";
+      document.getElementById("otp-input-section").style.display = "block";
+      countdown = setInterval(() => {
+        timeLeft--;
+        timer.textContent = `You have ${timeLeft}s to enter OTP`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          otpBtn.style.display = "block";
+          document.getElementById("otp-input-section").style.display = "none";
+          otpBtn.disabled = false;
+          timer.textContent = "Time's up! Please resend OTP.";
+        }
+      }, 1000);
+    }
 
-
+    // Booking form submit handler
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -264,8 +286,9 @@
       const slot = document.querySelector("select").value;
       const otp = otpInput.value.trim();
       const stationId = document.querySelectorAll(".co")[3].value.trim();
+      const date = document.getElementById("booking-date").value;
 
-      if (!name || !phone || !vehicleNumber || !slot || !otp) {
+      if (!name || !phone || !vehicleNumber || !slot || !otp || !date) {
         alert("Please fill in all fields and enter OTP");
         return;
       }
@@ -273,8 +296,8 @@
       const bookingData = {
         name,
         phone,
-        vehicleNumber, // if you're treating this as stationId
-        date: new Date().toISOString().split("T")[0],
+        vehicleNumber,
+        date,
         slot,
         otp,
         stationId
@@ -302,7 +325,6 @@
         alert("Booking failed. Please try again.");
       }
     });
-
   </script>
 </body>
 
