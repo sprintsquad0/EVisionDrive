@@ -317,6 +317,8 @@
           form.reset();
           document.getElementById("otp-input-section").style.display = "none";
           document.getElementById("otp-btn").disabled = false;
+          clearInterval(countdown);
+          timer.textContent = ""; 
         } else {
           alert("❌ " + result.message);
         }
