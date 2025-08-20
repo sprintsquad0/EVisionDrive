@@ -24,8 +24,7 @@ app.use(express.json());
 
 const mongoURI = process.env.MONGO_URI;
 
-mongoose
-  .connect(mongoURI)////newdb
+mongoose.connect(mongoURI)////newdb
   .then(() => {
     console.log("CONNECTED SUCCESSFULLY");
   })
