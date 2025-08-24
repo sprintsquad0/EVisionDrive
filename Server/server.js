@@ -582,6 +582,7 @@ const forgetpassOTPSchema = new mongoose.Schema({
   otp: String,
   otpExpiry: Date
 });
+
 const ForgetpassOTP = mongoose.model("ForgetpassOTP", forgetpassOTPSchema);
 
 // ✅ Send OTP route
@@ -652,6 +653,86 @@ app.post("/reset-password", async (req, res) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   const user = await UserRegisters.findOne({ Mail });
+  if (!user) return res.json({ message: "❌ User not found" });
+
+  user.Password = hashedPassword;
+  await user.save();
+
+  res.json({ message: "✅ Password reset success" });
+});
+
+
+//admin-forget pass
+
+
+// ✅ Send OTP route
+app.post("/send-otp/admin", async (req, res) => {
+  const { Mail } = req.body;
+  const user = await AdminRegisters.findOne({ Mail });
+
+  if (!user) {
+    return res.json({ registered: false, message: "❌ Email not registered" });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+
+  // Replace old OTP if exists
+  await ForgetpassOTP.findOneAndUpdate(
+    { email: Mail },
+    { otp, otpExpiry: expiry },
+    { upsert: true, new: true }
+  );
+
+  // Send OTP via SendGrid
+  const transporter = nodemailer.createTransport({
+    host: "smtp.sendgrid.net",
+    port: 587,
+    secure: false,
+    auth: {
+      user: "apikey",
+      pass: process.env.SENDGRID_API_KEY
+    }
+  });
+
+  try {
+    await transporter.sendMail({
+      from: "duotechcodex@gmail.com", // verified sender in SendGrid
+      to: Mail,
+      subject: "Your OTP Code",
+      text: `Your OTP is ${otp}. It expires in 5 minutes.`,
+      html: `<h3>Your OTP is <b>${otp}</b>. It expires in 5 minutes.</h3>`
+    });
+
+    res.json({ registered: true, message: "✅ OTP sent to email" });
+  } catch (error) {
+    console.error("SendGrid error:", error);
+    res.status(500).json({ registered: true, message: "❌ Failed to send OTP" });
+  }
+});
+
+// ✅ Verify OTP route
+app.post("/verify-otp/admin", async (req, res) => {
+  const { Mail, otp } = req.body;
+
+  const record = await ForgetpassOTP.findOne({ email: Mail, otp });
+
+  if (!record) return res.json({ message: "❌ Invalid OTP" });
+  if (Date.now() > record.otpExpiry) return res.json({ message: "⚠️ OTP expired" });
+
+  // Delete OTP after successful verification
+  await ForgetpassOTP.deleteOne({ email: Mail });
+
+  res.json({ message: "✅ OTP verified successfully" });
+});
+
+// ✅ Reset Password route
+app.post("/reset-password/admin", async (req, res) => {
+  const { Mail, newPassword } = req.body;
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const user = await AdminRegisters.findOne({ Mail });
   if (!user) return res.json({ message: "❌ User not found" });
 
   user.Password = hashedPassword;

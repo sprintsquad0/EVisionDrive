@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
     <style>
+        h4{
+            color: #97bdfe;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
         #backToLogin{
             color: #d8ecda;
             text-decoration: none;
@@ -93,6 +98,9 @@
 <body>
     <div class="container">
         <img src="../Images/imageforgetpass.png" alt="Image" id="imglogo" />
+        <h4>Welcome Admin
+            <br>
+        </h4>
         <h2>Forgot Password</h2>
         <p class="message" id="message"></p>
 
@@ -120,7 +128,7 @@
         const message = document.getElementById('message');
         if (!email) { message.textContent = 'Enter your email'; return; }
 
-        const response = await fetch("http://localhost:3000/send-otp", {
+        const response = await fetch("http://localhost:3000/send-otp/admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email })
@@ -147,7 +155,7 @@
         const email = document.getElementById('email').value;
         const message = document.getElementById('message');
 
-        const response = await fetch("http://localhost:3000/verify-otp", {
+        const response = await fetch("http://localhost:3000/verify-otp/admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email, otp })
@@ -179,7 +187,7 @@
             return;
         }
 
-        const response = await fetch("http://localhost:3000/reset-password", {
+        const response = await fetch("http://localhost:3000/reset-password/admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email, newPassword: newPass })

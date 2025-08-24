@@ -259,6 +259,12 @@
                 <div class="signup-link" id="loginLinkContainer" style="display:none;">
                     Already have an account? <a href="#" id="loginSwitchBtn">Sign In</a>
                 </div>
+                <div class="signup-link" id="loginLinkContainer">
+                    Forget Password ? <a href="User/forgetpass.html" id="loginSwitchBtn">Sign In</a>
+                </div>
+                <div class="signup-link" id="adminForgotPasswordLink" style="display:none;">
+                    Forget Password ? Admin bro <a href="Admin/forgetpass.html" id="loginSwitchBtn">Sign In</a>
+                </div>
             </div>
         </div>
     </div>
@@ -353,6 +359,7 @@
             document.querySelector(".submit-btn").textContent = currentMode === "login" ? "Sign In" : "Sign Up";
         }
 
+
         window.setTab = function (role) {
             currentRole = role;
             currentMode = "login";
@@ -362,7 +369,10 @@
             renderFields();
             document.getElementById('accessCodeField').style.display = (role === 'admin') ? "block" : "none";
             document.getElementById('signupLinkContainer').style.display = (role === 'admin') ? "none" : "block";
-            document.getElementById('loginLinkContainer').style.display = "none";
+                        document.getElementById('loginLinkContainer').style.display = "none";
+
+            document.getElementById('loginLinkContainer').style.display = (role === 'admin') ? "none" : "block";
+            document.getElementById('adminForgotPasswordLink').style.display = (role === 'admin') ? "block" : "none";
         };
 
         document.getElementById('adminAccessCode').addEventListener('input', function () {
@@ -385,6 +395,8 @@
             renderFields();
             document.getElementById('signupLinkContainer').style.display = "none";
             document.getElementById('loginLinkContainer').style.display = "block";
+            document.getElementById('userForgotPasswordLink').style.display = (currentRole === 'user') ? "block" : "none";
+            document.getElementById('adminForgotPasswordLink').style.display = (currentRole === 'admin') ? "block" : "none";
         };
 
         document.getElementById('loginSwitchBtn').onclick = function (e) {
@@ -393,7 +405,11 @@
             renderFields();
             document.getElementById('signupLinkContainer').style.display = "block";
             document.getElementById('loginLinkContainer').style.display = "none";
+            document.getElementById('userForgotPasswordLink').style.display = (currentRole === 'user') ? "block" : "none";
+            document.getElementById('adminForgotPasswordLink').style.display = (currentRole === 'admin') ? "block" : "none";
         };
+
+   
 
         renderFields();
 
