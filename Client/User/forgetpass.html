@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <style>
+        #imglogo {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            margin-left: 150px;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #0b0f1a;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: #0d1321;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 20px #0ef38b;
+            width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #3be84b;
+            font-size: 1.8rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: #1a1f2e;
+            color: #ffffff;
+        }
+
+        input::placeholder {
+            color: #9ca3af;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .blue {
+            background: #3be84b;
+            color: #0b0f1a;
+        }
+
+        .blue:hover {
+            opacity: 0.9;
+        }
+
+        .message {
+            color: #3be84b;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .step {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="C:/Users/deepv/Downloads/imageforgetpass.png" alt="Image" id="imglogo" />
+        <h2>Forgot Password</h2>
+        <p class="message" id="message"></p>
+
+        <div id="step1" class="step" style="display:block;">
+            <input type="email" id="email" placeholder="Enter Your Email">
+            <button class="blue" onclick="sendOtp()">Send OTP</button>
+        </div>
+
+        <div id="step2" class="step">
+            <input type="text" id="otp" placeholder="Enter OTP">
+            <button class="blue" onclick="verifyOtp()">Verify OTP</button>
+        </div>
+
+        <div id="step3" class="step">
+            <input type="password" id="newPass" placeholder="New Password">
+            <input type="password" id="confirmPass" placeholder="Confirm Password">
+            <button class="blue" onclick="resetPassword()">Change Password</button>
+        </div>
+    </div>
+
+    <script>
+    async function sendOtp() {
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message');
+        if (!email) { message.textContent = 'Enter your email'; return; }
+
+        const response = await fetch("http://localhost:3000/send-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Mail: email })
+        });
+
+        const data = await response.json();
+
+        if (data.registered === false) {
+            message.textContent = '❌ Email not registered';
+            return;
+        }
+
+        if (data.message.includes("OTP sent")) {
+            message.textContent = `✅ OTP Sent To ${email}`;
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        } else {
+            message.textContent = '❌ Failed to send OTP';
+        }
+    }
+
+    async function verifyOtp() {
+        const otp = document.getElementById('otp').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message');
+
+        const response = await fetch("http://localhost:3000/verify-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Mail: email, otp })
+        });
+
+        const data = await response.json();
+
+        if (data.message.includes("verified")) {
+            message.textContent = '✅ OTP verified. Enter new password.';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+        } else {
+            message.textContent = data.message; // shows "Invalid OTP" or "Expired"
+        }
+    }
+
+    async function resetPassword() {
+        const newPass = document.getElementById('newPass').value;
+        const confirmPass = document.getElementById('confirmPass').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message');
+
+        if (newPass !== confirmPass) {
+            message.textContent = 'Passwords do not match';
+            return;
+        }
+        if (newPass.length < 6) {
+            message.textContent = 'Password must be at least 6 characters';
+            return;
+        }
+
+        const response = await fetch("http://localhost:3000/reset-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Mail: email, newPassword: newPass })
+        });
+
+        const data = await response.json();
+        message.textContent = data.message;
+
+        if (data.message.includes("success")) {
+            // reset form
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('email').value = '';
+            document.getElementById('otp').value = '';
+            document.getElementById('newPass').value = '';
+            document.getElementById('confirmPass').value = '';
+        }
+    }
+</script>
+
+</body>
+
+</html>
