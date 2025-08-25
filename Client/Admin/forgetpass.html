@@ -128,6 +128,9 @@
         const message = document.getElementById('message');
         if (!email) { message.textContent = 'Enter your email'; return; }
 
+        
+        message.textContent="Loading..." ;
+
         const response = await fetch("http://localhost:3000/send-otp/admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -142,7 +145,10 @@
         }
 
         if (data.message.includes("OTP sent")) {
-            message.textContent = `✅ OTP Sent To ${email}`;
+            document.getElementById("message").style.display="none";
+            message.style.display="block";
+
+            message.textContent = `✅ OTP Sent To ${email} , Check Your SPAM Folder`;
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
         } else {

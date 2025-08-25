@@ -617,13 +617,37 @@ app.post("/send-otp", async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: "duotechcodex@gmail.com", // verified sender in SendGrid
-      to: Mail,
-      subject: "Your OTP Code",
-      text: `Your OTP is ${otp}. It expires in 5 minutes.`,
-      html: `<h3>Your OTP is <b>${otp}</b>. It expires in 5 minutes.</h3>`
-    });
+    from: "duotechcodex@gmail.com", // Verified Sender In SendGrid
+    to: Mail,
+    subject: "🔐 Your One-Time Password (OTP)",
+    text: `Hello ${ForgetpassOTP.Name},
 
+Your One-Time Password (OTP) Is: ${otp}
+
+Please Use This Code To Complete Your Verification.
+This Code Will Expire In 5 Minutes For Security Reasons.
+
+If You Did Not Request This, You Can Safely Ignore This Email.
+
+Best Regards,
+Team Sprint Squad`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2>🔐 Verification Required</h2>
+        <p>Hello ${ForgetpassOTP.Name},</p>
+        <p>Your One-Time Password (OTP) Is:</p>
+        <h1 style="color:#4caf50;">${otp}</h1>
+        <p>Please Enter This Code To Complete Your Verification.<br>
+        <b>Note:</b> This Code Will Expire In <b>5 Minutes</b>.</p>
+        <p>If You Did Not Request This Code, You Can Ignore This Email.</p>
+        <br>
+        <p>Best Regards,<br><b>Team Sprint Squad</b></p>
+      </div>
+    `
+  });
+
+  console.log(`${ForgetpassOTP.Name}`)
+  console.log(`${ForgetpassOTP}`)
     res.json({ registered: true, message: "✅ OTP sent to email" });
   } catch (error) {
     console.error("SendGrid error:", error);
@@ -698,26 +722,37 @@ app.post("/send-otp/admin", async (req, res) => {
 
   try {
 
-    await transporter.sendMail({
-  from: "duotechcodex@gmail.com",
-  to: Mail,
-  subject: "🔐 Your One-Time Password (OTP)",
-  // remove text completely OR expand it
-  html: `
-    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-      <h2>🔐 Verification Required</h2>
-      <p>Hello,</p>
-      <p>Your One-Time Password (OTP) Is:</p>
-      <h1 style="color:#4caf50;">${otp}</h1>
-      <p>Please Enter This Code To Complete Your Verification.<br>
-      <b>Note:</b> This Code Will Expire In <b>5 Minutes</b>.</p>
-      <p>If You Did Not Request This Code, You Can Ignore This Email.</p>
-      <br>
-      <p>Best Regards,<br><b>Team Sprint Squad</b></p>
-    </div>
-  `
-});
+  await transporter.sendMail({
+    from: "duotechcodex@gmail.com", // Verified Sender In SendGrid
+    to: Mail,
+    subject: "🔐 Your One-Time Password (OTP)",
+    text: `Hello ${ForgetpassOTP.Name} (ADMIN) !!,
 
+Your One-Time Password (OTP) Is: ${otp}
+
+Please Use This Code To Complete Your Verification.
+This Code Will Expire In 5 Minutes For Security Reasons.
+
+If You Did Not Request This, You Can Safely Ignore This Email.
+
+Best Regards,
+Team Sprint Squad`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2>🔐 Verification Required</h2>
+        <p>Hello, ${ForgetpassOTP.Name} (ADMIN) !!</p>
+        <p>Your One-Time Password (OTP) Is:</p>
+        <h1 style="color:#4caf50;">${otp}</h1>
+        <p>Please Enter This Code To Complete Your Verification.<br>
+        <b>Note:</b> This Code Will Expire In <b>5 Minutes</b>.</p>
+        <p>If You Did Not Request This Code, You Can Ignore This Email.</p>
+        <br>
+        <p>Best Regards,<br><b>Team Sprint Squad</b></p>
+      </div>
+    `
+  });
+
+  console.log(`${ForgetpassOTP.Name}`)
     res.json({ registered: true, message: "✅ OTP sent to email" });
   } catch (error) {
     console.error("SendGrid error:", error);
