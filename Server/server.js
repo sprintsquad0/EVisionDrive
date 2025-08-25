@@ -697,35 +697,27 @@ app.post("/send-otp/admin", async (req, res) => {
 
 
   try {
+
     await transporter.sendMail({
-      from: "duotechcodex@gmail.com", // verified sender in SendGrid
-      to: Mail,
-      subject: "🔐 Your One-Time Password (OTP)",
-      text: `Hello, 
-
-Your One-Time Password (OTP) Is: ${otp}
-
-Please Use This Code To Complete Your Verification. 
-This Code Will Expire In 5 Minutes For Security Reasons.
-
-If You Did Not Request This, You Can Safely Ignore This Email.
-
-Best Regards,  
-Team Sprint Squad`,
-      html: `
-    <div style="font-family: Arial, sans-serif; color: #333;">
+  from: "duotechcodex@gmail.com",
+  to: Mail,
+  subject: "🔐 Your One-Time Password (OTP)",
+  // remove text completely OR expand it
+  html: `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
       <h2>🔐 Verification Required</h2>
       <p>Hello,</p>
       <p>Your One-Time Password (OTP) Is:</p>
       <h1 style="color:#4caf50;">${otp}</h1>
-      <p>Please Enter This Code To Complete Your Verification. <br>
+      <p>Please Enter This Code To Complete Your Verification.<br>
       <b>Note:</b> This Code Will Expire In <b>5 Minutes</b>.</p>
-      <p style="margin-top:20px;">If You Didn’t Request This Code, You Can Ignore This Email.</p>
+      <p>If You Did Not Request This Code, You Can Ignore This Email.</p>
       <br>
       <p>Best Regards,<br><b>Team Sprint Squad</b></p>
     </div>
   `
-    });
+});
+
     res.json({ registered: true, message: "✅ OTP sent to email" });
   } catch (error) {
     console.error("SendGrid error:", error);

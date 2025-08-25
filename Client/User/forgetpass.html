@@ -120,12 +120,14 @@
         const message = document.getElementById('message');
         if (!email) { message.textContent = 'Enter your email'; return; }
 
+        message.textContent="Loading..." ;
         const response = await fetch("http://localhost:3000/send-otp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email })
         });
 
+       
         const data = await response.json();
 
         if (data.registered === false) {
@@ -134,6 +136,9 @@
         }
 
         if (data.message.includes("OTP sent")) {
+            document.getElementById("message").style.display="none";
+            message.style.display="block";
+
             message.textContent = `✅ OTP Sent To ${email}`;
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
