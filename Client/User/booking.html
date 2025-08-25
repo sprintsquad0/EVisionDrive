@@ -114,7 +114,7 @@
     <input type="text" class="co" placeholder="Enter Your Name" required />
 
     <label for="mobile">Mobile No</label>
-    <input type="text" class="co" placeholder="Enter Your Number" required />
+    <input type="text" class="co" placeholder="Enter Your Number, SHOULD MATCH THIS FORMAT- (+91XXXXXXXXXX)" required />
 
     <label for="vehicle">Vehicle No</label>
     <input type="text" class="co" placeholder="Enter Vehicle No" required />
@@ -323,6 +323,7 @@
           clearInterval(countdown);
           timer.textContent = "";
         } else {
+          console.log(result.message)
           alert("❌ " + result.message);
         }
       } catch (err) {
