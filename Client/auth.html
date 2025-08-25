@@ -259,11 +259,11 @@
                 <div class="signup-link" id="loginLinkContainer" style="display:none;">
                     Already have an account? <a href="#" id="loginSwitchBtn">Sign In</a>
                 </div>
-                <div class="signup-link" id="loginLinkContainer">
-                    Forget Password ? <a href="User/forgetpass.html" id="loginSwitchBtn">Sign In</a>
+                <div class="signup-link" id="loginLinkContainers">
+                    Forget Password ? <a href="User/forgetpass.html" id="loginSwitchBtn">Proceed</a>
                 </div>
                 <div class="signup-link" id="adminForgotPasswordLink" style="display:none;">
-                    Forget Password ? Admin bro <a href="Admin/forgetpass.html" id="loginSwitchBtn">Sign In</a>
+                    Forget Password ? <a href="Admin/forgetpass.html" id="loginSwitchBtn">Proceed</a>
                 </div>
             </div>
         </div>
@@ -369,9 +369,11 @@
             renderFields();
             document.getElementById('accessCodeField').style.display = (role === 'admin') ? "block" : "none";
             document.getElementById('signupLinkContainer').style.display = (role === 'admin') ? "none" : "block";
-                        document.getElementById('loginLinkContainer').style.display = "none";
+           // document.getElementById('loginLinkContainer').style.display = "block";
 
-            document.getElementById('loginLinkContainer').style.display = (role === 'admin') ? "none" : "block";
+            document.getElementById('loginLinkContainers').style.display = (role === 'user') ? "block" : "none";
+
+            document.getElementById('loginLinkContainer').style.display = (role === 'user') ? "none" : "none";
             document.getElementById('adminForgotPasswordLink').style.display = (role === 'admin') ? "block" : "none";
         };
 
