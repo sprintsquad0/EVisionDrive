@@ -123,40 +123,6 @@ app.post('/userlogin', async (req, res) => {
 })
 const AdminRegisters = mongoose.model("AdminRegisters", schema, "AdminRegisters");
 
-
-app.post('/adminlogin', async (req, res) => {
-  try {
-
-    const { Username, Password } = req.body;
-    if (!Username || !Password) {
-      return res.status(400).json({ message: "Username and Password are required" });
-    }
-
-    // Find user
-    const admin = await AdminRegisters.findOne({ Username });
-    if (!admin) {
-      return res.status(401).json({ message: "Invalid Username" });
-    }
-
-    // Compare passwords
-
-    // Compare passwords
-    /*
-        const bcrypt = require('bcrypt');*/
-    const isPasswordMatch = await bcrypt.compare(Password, admin.Password);
-    if (!isPasswordMatch) {
-      return res.status(401).json({ message: "Invalid Password" });
-    }
-    res.status(201).json({ message: "Admin Logged successfully", username: admin.Username });
-
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: "Internal Server Error", error: err.message });
-
-  }
-})
-
-
 app.post("/adminreg", async (req, res) => {
   try {
     const { Username, Password, Mail, Phone, Name } = req.body;
@@ -202,6 +168,42 @@ app.post("/adminreg", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: e.message });
   }
 });
+
+
+app.post('/adminlogin', async (req, res) => {
+  try {
+
+    const { Username, Password } = req.body;
+    if (!Username || !Password) {
+      return res.status(400).json({ message: "Username and Password are required" });
+    }
+
+    console.log("Finding admin user...");
+    // Find user
+    //const admin = await AdminRegisters.findOne({ Username });
+    const admin = await AdminRegisters.findOne({ Username }).select('+Password');
+
+    if (!admin) {
+      return res.status(401).json({ message: "Invalid Username" });
+    }
+
+    // Compare passwords
+
+    // Compare passwords
+    /*
+        const bcrypt = require('bcrypt');*/
+    const isPasswordMatch = await bcrypt.compare(Password, admin.Password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: "Invalid Password" });
+    }
+    res.status(201).json({ message: "Admin Logged successfully", username: admin.Username});
+
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Internal Server Error", error: e.message });
+
+  }
+})
 
 
 
