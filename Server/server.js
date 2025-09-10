@@ -263,12 +263,17 @@ app.post("/admin/create-station", async (req, res) => {
     });
 
     await newStation.save();
+    res.json(newStation);
+    
+    /*
     res.send(
       `<script>
          alert("Station Created Successfully!");
          window.location.href = "/Admin/station.html";
        </script>`
     );
+    */
+
   } catch (err) {
     console.error(err);
     return res.status(500).send("<h2 style='color:red;'>Station Already Exists!</h2>");
@@ -276,6 +281,38 @@ app.post("/admin/create-station", async (req, res) => {
 });
 
 
+//************/
+app.get("/stations/:id", async (req, res) => {
+  try {
+    const station = await StationCreation.findById(req.params.id);
+    if (!station) return res.status(404).json({ error: "Station not found" });
+    res.json(station);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
+
+app.get("/stations/:id/bookings", async (req, res) => {
+  try {
+    const stationId = req.params.id;
+    const bookings = await BookingModel.find({ stationId: stationId });
+
+    if (!bookings) {
+      return res.status(404).json({ message: "No bookings found for this station" });
+    }
+
+    console.log("Bookings fetched:", bookings);
+    res.json(bookings);
+  } catch (err) {
+    console.error("Error fetching bookings:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+ 
 
 //list
 

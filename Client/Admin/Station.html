@@ -4,7 +4,7 @@
 <head>
   <style>
     /* Background & Body Styling */
-   
+
 
     body {
       background: linear-gradient(120deg, #0f172a, #1e293b);
@@ -92,17 +92,19 @@
       color: #a5f3fc;
       opacity: 0.8;
     }
-    #check
-    {
-      margin-left:-60%;
+
+    #check {
+      margin-left: -60%;
     }
-    #b{
+
+    #b {
       color: #a5f3fc;
       font-weight: bold;
-      position:relative;
-      left:-180px;
+      position: relative;
+      left: -180px;
     }
-    #btn{
+
+    #btn {
       padding-top: 15px;
     }
   </style>
@@ -110,22 +112,23 @@
 
 <body>
   <h2>Create New Station</h2>
-  <form action="http://localhost:3000/admin/create-station" method="post">
+  <!-- action="http://localhost:3000/admin/create-station" method="post" -->
+  <form id="stationForm">
     <label>Station Name:</label>
-    <input type="text" name="name"class="co" placeholder="Station Name" required />
+    <input type="text" name="name" class="co" placeholder="Station Name" required />
 
     <label for="tel">Mobile Number:</label>
-    <input type="tel" id="tel" name="tel" class="co"placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" maxlength="10"
-      minlength="10" required>
+    <input type="tel" id="tel" name="tel" class="co" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}"
+      maxlength="10" minlength="10" required>
 
     <label>Location:</label>
-    <input type="text" name="location" class="co"placeholder="Location" required />
+    <input type="text" name="location" class="co" placeholder="Location" required />
 
     <label for="MapURL">Google Maps URL:</label>
-    <input type="url" id="MapURL" name="MapURL" class="co"placeholder="https://maps.google.com/..." required>
+    <input type="url" id="MapURL" name="MapURL" class="co" placeholder="https://maps.google.com/..." required>
 
     <label>Number of Slots:</label>
-    <input type="number" name="slots" class="co"placeholder="Number of Slots" required />
+    <input type="number" name="slots" class="co" placeholder="Number of Slots" required />
 
     <label>Status:</label>
     <select name="status" required>
@@ -134,11 +137,56 @@
     </select>
 
     <label>Updated On:</label>
-    <input type="text" name="update"class="co" placeholder="DATE AND TIME IN 24HRS FORMAT!!" required />
-    <input type="checkbox"id="check" name="check" ><span id="b">Booking Option</span>
+    <input type="text" name="update" class="co" placeholder="DATE AND TIME IN 24HRS FORMAT!!" required />
+    <input type="checkbox" id="check" name="check"><span id="b">Booking Option</span>
+
     <div id="btn">
-    <button type="submit"onclick="crtst()">Create Station</button>
+      <button type="submit">Create Station</button>
     </div>
   </form>
+
+
+  <script>
+    document.getElementById("stationForm").addEventListener("submit", async function(e) {
+  e.preventDefault(); // stop form reload
+
+  // Gather form data
+  const formData = {
+    name: this.name.value,
+    tel: this.tel.value,
+    location: this.location.value,
+    MapURL: this.MapURL.value,
+    slots: this.slots.value,
+    status: this.status.value,
+    update: this.update.value,
+    booking: this.check.checked
+  };
+ 
+
+  
+  try {
+    const res = await fetch("http://localhost:3000/admin/create-station", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    });
+
+    if (!res.ok) throw new Error("Failed to create station");
+
+    const station = await res.json();
+
+     alert("Station Created Successfully!");
+    // Notify parent if needed
+    window.parent.postMessage({ type: "NEW_STATION", station }, "*");
+
+    // Alert user and reset form
+   
+    this.reset();
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+});
+  </script>
 </body>
+
 </html>

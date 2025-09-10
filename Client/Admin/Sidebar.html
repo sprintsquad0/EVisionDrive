@@ -106,14 +106,87 @@
 
 <body>
   <div>
-    <h2>Admin Panel</h2>
-    <a href="home.html" target="main"><span>Dashboard</span><span>🏠</span></a>
-    <a href="Station.html" target="main"><span>Create Station</span><span>➕</span></a>
-    <a href="manage.html" target="main"><span>View Stations</span><span>📍</span></a>
-    <a href="profile.html" target="main"><span>Profile</span><span>👤</span></a>
-  </div>
-  
-  
+  <h2>Admin Panel</h2>
+  <a href="home.html" target="main"><span>Dashboard</span><span>🏠</span></a>
+  <a href="Station.html" target="main"><span>Create Station</span><span>➕</span></a>
+  <a href="manage.html" target="main"><span>View Stations</span><span>📍</span></a>
+
+  <!-- Dynamic stations will go here -->
+  <div id="stationsContainer"></div>
+
+  <a href="profile.html" target="main"><span>Profile</span><span>👤</span></a>
+</div>
+
+<script>
+  const stationsContainer = document.getElementById("stationsContainer");
+
+ function addStationLink(station) {
+  const link = document.createElement("a");
+  link.textContent = station.name;
+  link.href = `check.html?id=${station._id}`;
+  link.target = "main";
+
+  // Common styles
+  link.style.display = "flex";
+  link.style.justifyContent = "space-between";
+  link.style.alignItems = "center";
+  link.style.width = "130px";
+  link.style.padding = "12px 10px";
+  link.style.borderRadius = "8px";
+  link.style.boxShadow = "0 4px 8px rgba(0,0,0,0.7)";
+  link.style.transition = "all 0.3s ease";
+  link.style.fontSize = "13px";
+  link.style.fontWeight = "bold";
+  link.style.letterSpacing = "1px";
+  link.style.color = "#fff";
+  link.style.textDecoration = "none";
+  link.style.marginTop = "15px";
+
+  // Fetch bookings for this station
+  fetch(`http://localhost:3000/stations/${station._id}/bookings`)
+    .then(response => {
+      if (!response.ok) throw new Error("Network response was not ok");
+      return response.json();
+    })
+    .then(bookings => {
+      if (bookings.length > 0) {
+        link.style.background = "rgba(52, 202, 239, 0.8)";
+        // Hover effect
+        link.addEventListener("mouseenter", () => {
+          link.style.background = "rgba(56, 142, 60, 0.9)";
+          link.style.transform = "translateY(-2px)";
+        });
+        link.addEventListener("mouseleave", () => {
+          link.style.background = "rgba(52, 202, 239, 0.8)";
+          link.style.transform = "translateY(0)";
+        });
+      } else {
+        // No bookings
+        link.style.background = "lightgrey";
+        link.style.color = "#555";
+      }
+
+      // Append after fetch completes
+      stationsContainer.appendChild(link);
+    })
+    .catch(err => console.error(err));
+}
+
+
+
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch("http://localhost:3000/api/stations")
+      .then(res => res.json())
+      .then(data => data.forEach(station => addStationLink(station)))
+      .catch(err => console.error(err));
+  });
+
+  window.addEventListener("message", (event) => {
+    if (event.data.type === "NEW_STATION") {
+      addStationLink(event.data.station);
+    }
+  });
+</script>
 
 </body>
 

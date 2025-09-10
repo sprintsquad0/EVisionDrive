@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Station Booking History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #0f172a, #1e293b);
+
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #79fce4;
+        }
+
+        .booking-container {
+            color: #e0e0e0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .booking-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            width: 220px;
+            transition: transform 0.2s;
+            color: #222;
+        }
+
+        .booking-card.upcoming {
+            background-color: #d4edda;
+            /* light green */
+        }
+
+        .booking-card.past {
+            background-color: #e0e0e0;
+            /* grey */
+            color: #555;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .booking-card p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .booking-card p span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Station Booking History</h2>
+    <div class="booking-container" id="bookingContainer">
+        Loading bookings...
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const stationId = params.get("id");
+        const container = document.getElementById("bookingContainer");
+
+        function isBookingPast(dateStr, slotStr) {
+            const [startTime] = slotStr.split("~").map(s => s.trim());
+            const [hours, minutes] = startTime.split(/[: ]/);
+            const period = startTime.includes("PM") ? "PM" : "AM";
+
+            let hour = parseInt(hours);
+            const minute = parseInt(minutes);
+            if (period === "PM" && hour !== 12) hour += 12;
+            if (period === "AM" && hour === 12) hour = 0;
+
+            const bookingDate = new Date(dateStr);
+            bookingDate.setHours(hour, minute, 0, 0);
+
+            return new Date() > bookingDate;
+        }
+
+        if (!stationId) {
+            container.textContent = "No station ID provided in URL.";
+        } else {
+            fetch(`http://localhost:3000/stations/${stationId}/bookings`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
+                .then(bookings => {
+                    if (!bookings.length) {
+                        container.textContent = "No bookings found for this station.";
+                        return;
+                    }
+
+                    container.innerHTML = "";
+
+                    bookings.forEach(booking => {
+                        const card = document.createElement("div");
+                        const past = isBookingPast(booking.date, booking.slot);
+                        card.className = `booking-card ${past ? "past" : "upcoming"}`;
+                        card.innerHTML = `
+              <p><span>Name:</span> ${booking.name}</p>
+              <p><span>Phone:</span> ${booking.phone}</p>
+              <p><span>Vehicle Number:</span> ${booking.vehicleNumber}</p>
+              <p><span>Date:</span> ${booking.date}</p>
+              <p><span>Slot:</span> ${booking.slot}</p>
+            `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching booking history:", err);
+                    container.textContent = "Error loading booking history.";
+                });
+        }
+    </script>
+</body>
+
+</html>
