@@ -529,8 +529,9 @@
                     });
                     const data = await response.json();
 
+                    localStorage.setItem("AdminUsername", data.username);
                     if (response.ok) {
-                        localStorage.setItem("AdminUsername", data.username);
+                        
                         alert(`${uname} Logged Successfully`);
                         window.location.href = "Admin/mains2.html";
                     } else {
