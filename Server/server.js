@@ -16,6 +16,7 @@ import twilio from "twilio"
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -346,6 +347,25 @@ app.post("/stations/:id/bookings/mark-seen", async (req, res) => {
 });
 
 
+
+app.get("/:username/historybookings", async (req, res) => {
+  try {
+    const username = req.params.username;
+    const bookings = await BookingModel.find({ user: username })
+                                       .sort({ date: -1 })
+                                       .lean(); 
+                                       // optional: returns plain JS objects
+
+    console.log(`History bookings for user ${username}:`, bookings);
+    res.json(bookings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 //list
 
 app.get("/api/stations", async (req, res) => {
@@ -547,14 +567,15 @@ const BookingSchema = new mongoose.Schema({
   vehicleNumber: String,
   date: String,
   slot: String,
-  is_seen: { type: Boolean, default: false }
+  is_seen: { type: Boolean, default: false },
+  user: String
 });
 
 const BookingModel = mongoose.model("BookingModel", BookingSchema);
 
 //User fills booking form + OTP → one click to submit
 app.post("/api/book-slot", async (req, res) => {
-  const { name, phone, vehicleNumber, date, slot, otp, stationId } = req.body;
+  const { name, phone, vehicleNumber, date, slot, otp, stationId ,user} = req.body;
 
   try {
     const existingOtp = await Otp.findOne({ phone }).sort({ createdAt: -1 });
@@ -590,7 +611,8 @@ app.post("/api/book-slot", async (req, res) => {
       phone,
       vehicleNumber,
       date,
-      slot
+      slot,
+      user
     });
 
     res.status(200).json({ message: "Booking successful!" });

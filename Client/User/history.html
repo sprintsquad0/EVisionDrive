@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History</title>
+    <style>
+        #spinner {
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid #4caf50;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: block;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        body {
+            background-color: #11192c;
+            background-image: url('../Images/bgp.webp');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #searchBar {
+            margin-bottom: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            width: 300px;
+            text-align: center;
+            border-radius: 20px;
+            border: 1px solid #4CAF50;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            font-size: 1em;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        #searchBar:focus {
+            box-shadow: 0 0 15px #4CAF50;
+        }
+
+        #historyContainer {
+            width: 80%;
+            max-width: 600px;
+            padding-bottom: 20px;
+        }
+
+        .booking-card {
+            margin-top: 14px;
+            border-radius: 22px;
+            padding: 14px;
+            transition: 0.3s ease;
+            background: #2a2f4a;
+            border: 1px solid #444;
+        }
+
+        .booking-card:hover {
+            transform: scale(1.03);
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #2e7d32;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .status-seen {
+            background-color: #86f7aa;
+            color: #111;
+        }
+
+        .status-unseen {
+            background-color: #f7766d;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body onload="RetrieveHistory()">
+    <div id="spinner"></div>
+    <div>
+        <input type="text" id="searchBar" placeholder="🔍 Search By Station or Location..." oninput="filterHistory()">
+    </div>
+    <div id="historyContainer"></div>
+
+    <script>
+        const username = localStorage.getItem("userUsername");
+
+
+        console.log("Fetching history for user:", username);
+        const spinner = document.getElementById("spinner");
+        let historyData = [];
+
+
+        async function RetrieveHistory() {
+            try {
+                spinner.style.display = "block";
+                const response = await fetch(`http://localhost:3000/${username}/historybookings`);
+                console.log(`Fetching from: http://localhost:3000/${username}/historybookings`);
+                if (!response.ok) throw new Error(`Failed to fetch data: ${response.status}`);
+                historyData = await response.json();
+                historyData.sort((a, b) => new Date(b.date) - new Date(a.date));
+                renderHistory(historyData);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderHistory(data) {
+            const container = document.getElementById("historyContainer");
+            container.innerHTML = "";
+
+            if (!data.length) {
+                container.innerHTML = "<p style='color:white'>No Booking History Available!</p>";
+                spinner.style.display = "none";
+                return;
+            }
+
+            data.forEach(booking => {
+                const card = document.createElement("div");
+                card.className = "booking-card";
+
+                const statusClass = booking.is_seen ? "status-seen" : "status-unseen";
+
+                card.innerHTML = `
+            <strong>Booking ID:</strong> ${booking._id}<br>
+            <strong>Station:</strong> ${booking.stationName || booking.stationId}<br>
+            <strong>User:</strong> ${booking.user}<br>
+            <strong>Date:</strong> ${new Date(booking.date).toLocaleString()}<br>
+            <strong>Status:</strong> <span class="status ${statusClass}">${booking.is_seen ? 'Seen' : 'Unseen'}</span><br>
+            ${booking.stationMap ? `<a href="${booking.stationMap}" target="_blank">View Station on Map</a>` : ''}
+            <hr>
+        `;
+
+                container.appendChild(card);
+            });
+
+            spinner.style.display = "none";
+        }
+
+        function filterHistory() {
+            const query = document.getElementById("searchBar").value.toLowerCase();
+            const filteredData = historyData.filter(
+                b => (b.stationName && b.stationName.toLowerCase().includes(query)) ||
+                    (b.location && b.location.toLowerCase().includes(query))
+            );
+            renderHistory(filteredData);
+        }
+
+    </script>
+</body>
+
+</html>
