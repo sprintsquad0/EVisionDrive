@@ -223,7 +223,8 @@ const stationSchema = new mongoose.Schema({
   slots: Number,
   status: String,
   update: String,
-  check: { type: Boolean, default: false }
+  check: { type: Boolean, default: false },
+  
 });
 
 app.use(express.static(path.join(__dirname, "../Client")));
@@ -250,6 +251,7 @@ app.post("/admin/create-station", async (req, res) => {
       return res.status(400).send("Station already exists!");
     }
     const isBookingEnabled = check === "on";
+
 
     const newStation = new StationCreation({
       name,
@@ -312,7 +314,37 @@ app.get("/stations/:id/bookings", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+app.get("/stations/:id/bookings/unseen", async (req, res) => {
+  try {
+    const stationId = req.params.id;
+    const unseenCount = await BookingModel.countDocuments({ stationId, is_seen: false });
+    const totalCount = await BookingModel.countDocuments({ stationId });
+    console.log(`IN BACKEND -- Unseen bookings for station ${stationId}:`, unseenCount);
+    res.json({ count: unseenCount, length: totalCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
  
+app.post("/stations/:id/bookings/mark-seen", async (req, res) => {
+  try {
+    const stationId = req.params.id;
+    await BookingModel.updateMany(
+      { stationId, is_seen: false },
+      { $set: { is_seen: true } }
+    );
+    res.json({ message: "Bookings marked as seen" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 //list
 
@@ -514,7 +546,8 @@ const BookingSchema = new mongoose.Schema({
   phone: String,
   vehicleNumber: String,
   date: String,
-  slot: String
+  slot: String,
+  is_seen: { type: Boolean, default: false }
 });
 
 const BookingModel = mongoose.model("BookingModel", BookingSchema);
