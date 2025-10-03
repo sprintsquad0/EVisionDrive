@@ -16,35 +16,29 @@
             display: none;
             margin: 20px auto;
         }
-
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
         }
-
         * {
             box-sizing: border-box;
             padding: 0;
             margin: 0;
         }
-
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #0f0f0f;
             color: white;
         }
-
         .main-container {
             display: flex;
             flex-wrap: wrap;
             min-height: 100vh;
         }
-
         .left-panel {
             flex: 1 1 69%;
             background: url('Images/bg1.png') no-repeat center/cover;
@@ -80,7 +74,6 @@
             align-items: center;
             padding: 40px 20px;
         }
-
         .auth-box {
             background: #1a1a1a;
             padding: 30px 40px;
@@ -89,7 +82,6 @@
             max-width: 400px;
             box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
         }
-
         .tabs {
             display: flex;
             justify-content: space-between;
@@ -98,7 +90,6 @@
             overflow: hidden;
             margin-bottom: 30px;
         }
-
         .tabs button {
             flex: 1;
             padding: 10px 0;
@@ -109,49 +100,37 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-
         .tabs button.active {
             background: #0af;
             color: black;
         }
-
         .auth-box h2 {
             margin-bottom: 10px;
             font-size: 1.4rem;
         }
-
         .auth-box p {
             margin-bottom: 20px;
             color: #aaa;
             font-size: 0.9rem;
         }
-
         .auth-box label {
             display: block;
             font-size: 0.9rem;
             margin-top: 15px;
             margin-bottom: 6px;
         }
-
         .input-group {
             position: relative;
         }
-
         .input-group input {
             width: 100%;
             padding: 12px 40px 12px 40px;
             background: transparent;
             border: none;
             border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            /* Glass-like */
-
             color: rgb(244, 235, 192);
             outline: none;
-
         }
-
-
-
         .input-group i {
             position: absolute;
             left: 12px;
@@ -159,7 +138,6 @@
             transform: translateY(-50%);
             color: #888;
         }
-
         .submit-btn {
             margin-top: 20px;
             background: linear-gradient(to right, #00bfff, #00ff99);

@@ -1004,6 +1004,68 @@ app.post("/reset-password/admin", async (req, res) => {
 });
 
 
+app.get("/api/users/count", async (req, res) => {
+  try {
+    const userCount = await UserRegisters.countDocuments();
+    console.log(userCount)
+    res.json({ count: userCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch user count." });
+  }
+});
+
+app.get("/api/bookings/count", async (req, res)=>{
+  try {
+    const bookingCount = await BookingModel.countDocuments();
+    console.log(bookingCount)
+    res.json({ count: bookingCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch booking count." });
+  }
+});
+
+app.get("/api/bookings/during", async (req, res)=>{
+  try {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+    const bookingsToday = await BookingModel.countDocuments({
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    });
+    console.log(bookingsToday)
+    res.json({ count: bookingsToday });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch bookings during the day." });
+  }
+});
+
+app.get("/api/stations/count", async (req, res)=>{
+
+  try {
+    const stationCount = await StationCreation.countDocuments();
+    console.log(stationCount)
+    res.json({ count: stationCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch station count." });
+  }
+});
+
+app.get("/api/stations/low-slots", async (req, res) => {
+  try {
+    const lowSlotStations = await StationCreation.find({ slots: { $lt: 4 } });
+    console.log(lowSlotStations)
+    res.json({ count: lowSlotStations.length, stations: lowSlotStations });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch low slot stations." });
+  }
+
+});
+
 app.listen(port, () => {
-  console.log(`SERVER RUNNING ON ${port}`);
+  console.log(`Server running on port ${port}`);
 });
