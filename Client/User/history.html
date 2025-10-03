@@ -118,18 +118,28 @@
 
     <script>
         const username = localStorage.getItem("userUsername");
-
-
-        console.log("Fetching history for user:", username);
         const spinner = document.getElementById("spinner");
         let historyData = [];
 
+        // Function to check if a booking is past (date + slot)
+        function isBookingPast(dateStr, slotStr) {
+            if (!slotStr) return new Date(dateStr) < new Date(); // fallback if no slot
+            const [startTime] = slotStr.split("~").map(s => s.trim());
+            const [hours, minutes] = startTime.split(/[: ]/);
+            const period = startTime.includes("PM") ? "PM" : "AM";
+            let hour = parseInt(hours);
+            const minute = parseInt(minutes);
+            if (period === "PM" && hour !== 12) hour += 12;
+            if (period === "AM" && hour === 12) hour = 0;
+            const bookingDate = new Date(dateStr);
+            bookingDate.setHours(hour, minute, 0, 0);
+            return new Date() > bookingDate;
+        }
 
         async function RetrieveHistory() {
             try {
                 spinner.style.display = "block";
                 const response = await fetch(`http://localhost:3000/${username}/historybookings`);
-                console.log(`Fetching from: http://localhost:3000/${username}/historybookings`);
                 if (!response.ok) throw new Error(`Failed to fetch data: ${response.status}`);
                 historyData = await response.json();
                 historyData.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -149,22 +159,35 @@
                 return;
             }
 
+            const now = new Date();
+
             data.forEach(booking => {
                 const card = document.createElement("div");
                 card.className = "booking-card";
 
+                // Color based on date & time
+                let bgColor = "";
+                if (isBookingPast(booking.date, booking.slot)) {
+                    bgColor = "grey"; // past
+                } else if (new Date(booking.date).toDateString() === now.toDateString()) {
+                    bgColor = "yellow"; // today upcoming
+                } else {
+                    bgColor = "green"; // future
+                }
+                card.style.backgroundColor = bgColor;
+
                 const statusClass = booking.is_seen ? "status-seen" : "status-unseen";
 
                 card.innerHTML = `
-            <strong>Booking ID:</strong> ${booking._id}<br>
-            <strong>Station:</strong> ${booking.stationName || booking.stationId}<br>
-            <strong>User:</strong> ${booking.user}<br>
-            <strong>Date:</strong> ${new Date(booking.date).toLocaleString()}<br>
-            <strong>Status:</strong> <span class="status ${statusClass}">${booking.is_seen ? 'Seen' : 'Unseen'}</span><br>
-            ${booking.stationMap ? `<a href="${booking.stationMap}" target="_blank">View Station on Map</a>` : ''}
-            <hr>
-        `;
-
+                    <strong>Booking ID:</strong> ${booking._id}<br>
+                    <strong>Station:</strong> ${booking.stationName || booking.stationId}<br>
+                    <strong>User:</strong> ${booking.user}<br>
+                    <strong>Date:</strong> ${new Date(booking.date).toLocaleString()}<br>
+                    <strong>Slot:</strong> ${booking.slot || 'N/A'}<br>
+                    <strong>Status:</strong> <span class="status ${statusClass}">${booking.is_seen ? 'Seen' : 'Unseen'}</span><br>
+                    ${booking.stationMap ? `<a href="${booking.stationMap}" target="_blank">View Station on Map</a>` : ''}
+                    <hr>
+                `;
                 container.appendChild(card);
             });
 
@@ -174,12 +197,11 @@
         function filterHistory() {
             const query = document.getElementById("searchBar").value.toLowerCase();
             const filteredData = historyData.filter(
-                b => (b.stationName && b.stationName.toLowerCase().includes(query)) ||
-                    (b.location && b.location.toLowerCase().includes(query))
+                b => (b.stationId && b.stationId.toLowerCase().includes(query)) ||
+                     (b.stationName && b.stationName.toLowerCase().includes(query))
             );
             renderHistory(filteredData);
         }
-
     </script>
 </body>
 

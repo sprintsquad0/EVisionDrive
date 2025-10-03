@@ -92,36 +92,50 @@
             container.textContent = "No station ID provided in URL.";
         } else {
             fetch(`http://localhost:3000/stations/${stationId}/bookings`)
-                .then(response => {
-                    if (!response.ok) throw new Error("Network response was not ok");
-                    return response.json();
-                })
-                .then(bookings => {
-                    if (!bookings.length) {
-                        container.textContent = "No bookings found for this station.";
-                        return;
-                    }
+  .then(response => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  })
+  .then(bookings => {
+    if (!bookings.length) {
+      container.textContent = "No bookings found for this station.";
+      return;
+    }
 
-                    container.innerHTML = "";
+    container.innerHTML = "";
 
-                    bookings.forEach(booking => {
-                        const card = document.createElement("div");
-                        const past = isBookingPast(booking.date, booking.slot);
-                        card.className = `booking-card ${past ? "past" : "upcoming"}`;
-                        card.innerHTML = `
-              <p><span>Name:</span> ${booking.name}</p>
-              <p><span>Phone:</span> ${booking.phone}</p>
-              <p><span>Vehicle Number:</span> ${booking.vehicleNumber}</p>
-              <p><span>Date:</span> ${booking.date}</p>
-              <p><span>Slot:</span> ${booking.slot}</p>
-            `;
-                        container.appendChild(card);
-                    });
-                })
-                .catch(err => {
-                    console.error("Error fetching booking history:", err);
-                    container.textContent = "Error loading booking history.";
-                });
+    const now = new Date();
+
+    bookings.forEach(booking => {
+      const bookingDate = new Date(booking.date);
+      let color = "";
+
+      if (bookingDate > now) {
+        color = "green"; 
+      } else if (bookingDate.toDateString() === now.toDateString()) {
+        color = "yellow"; 
+      } else {
+        color = "grey";
+      }
+
+      const card = document.createElement("div");
+      card.className = "booking-card";
+      card.style.backgroundColor = color; 
+      card.innerHTML = `
+        <p><span>Name:</span> ${booking.name}</p>
+        <p><span>Phone:</span> ${booking.phone}</p>
+        <p><span>Vehicle Number:</span> ${booking.vehicleNumber}</p>
+        <p><span>Date:</span> ${booking.date}</p>
+        <p><span>Slot:</span> ${booking.slot}</p>
+      `;
+      container.appendChild(card);
+    });
+  })
+  .catch(err => {
+    console.error("Error fetching booking history:", err);
+    container.textContent = "Error loading booking history.";
+  });
+
         }
     </script>
 </body>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -109,12 +111,15 @@
 
 <body>
   <h2>Book Your Slot</h2>
-  <form action="#">
+  <form id="bookingForm" action="#">
     <label for="name">Name</label>
     <input type="text" class="co" placeholder="Enter Your Name" required />
 
     <label for="mobile">Mobile No</label>
-    <input type="text" class="co" placeholder="Enter Your Number, SHOULD MATCH THIS FORMAT- (+91XXXXXXXXXX)" required />
+    <input type="text" class="co" placeholder="SHOULD MATCH THIS FORMAT- (+91XXXXXXXXXX)" required />
+
+    <label for="email">Enter Email</label>
+    <input type="email" class="co" id="email-input" placeholder="Enter Your Email" required />
 
     <label for="vehicle">Vehicle No</label>
     <input type="text" class="co" placeholder="Enter Vehicle No" required />
@@ -125,15 +130,12 @@
     <label for="date">Booking Date</label>
     <input type="date" class="co" id="booking-date" required />
 
-
     <label for="slot">Timing Slots</label>
-    <select required id="slot-dropdown">
-
-    </select>
+    <select required id="slot-dropdown"></select>
 
     <!-- Send OTP Section -->
     <div id="otp-section">
-      <button type="button" id="otp-btn" onclick="startOtpTimer()">SEND OTP</button>
+      <button type="button" id="otp-btn">SEND OTP</button>
       <div id="timer"></div>
     </div>
 
@@ -141,7 +143,7 @@
     <div id="otp-input-section" style="display: none;">
       <label for="otp">Enter OTP</label>
       <input type="text" class="co" id="otp-value" placeholder="Enter Your OTP" required />
-      <input type="submit" id="sub" value="Book Slot" />
+      <button id="sub" value="submit" type="submit">Book Slot</button>
     </div>
   </form>
 
@@ -155,15 +157,22 @@
     const form = document.querySelector("form");
     const otpInput = document.getElementById("otp-value");
 
-    // Fetch available slots when date changes
+    document.querySelectorAll(".co")[4].addEventListener("input", fetchAvailableSlots); // Station Id
     document.getElementById("booking-date").addEventListener("change", fetchAvailableSlots);
 
     async function fetchAvailableSlots() {
       const date = document.getElementById("booking-date").value;
-      const stationId = document.querySelectorAll(".co")[3].value.trim();
+      const stationId = document.querySelectorAll(".co")[4].value.trim();
       const slotDropdown = document.getElementById("slot-dropdown");
 
-      if (!date || !stationId) return;
+      if (!stationId) {
+        slotDropdown.innerHTML = `<option disabled selected>Enter Station Id first</option>`;
+        return;
+      }
+      if (!date) {
+        slotDropdown.innerHTML = `<option disabled selected>Select a date first</option>`;
+        return;
+      }
 
       try {
         const res = await fetch(`http://localhost:3000/api/available-slots?stationId=${stationId}&date=${date}`);
@@ -181,6 +190,8 @@
         const now = new Date();
         const today = now.toISOString().split("T")[0];
         const selectedDay = new Date(date).toISOString().split("T")[0];
+
+        const availableSlots = Array.isArray(data.availableSlots) ? data.availableSlots : [];
 
         allSlots.forEach(slot => {
           const [start] = slot.split(" ~ ");
@@ -206,12 +217,13 @@
 
           const option = document.createElement("option");
           option.value = slot;
-          option.textContent = data.availableSlots.includes(slot) ? slot : `${slot} (Booked)`;
-          option.disabled = !data.availableSlots.includes(slot);
+          option.textContent = availableSlots.includes(slot) ? slot : `${slot} (Booked)`;
+          option.disabled = !availableSlots.includes(slot);
           slotDropdown.appendChild(option);
         });
 
       } catch (err) {
+        slotDropdown.innerHTML = `<option disabled selected>Error fetching slots</option>`;
         console.log("Error fetching slots:", err);
       }
     }
@@ -238,20 +250,37 @@
         });
 
         const msg = await res.text();
+        const email = document.getElementById("email-input").value.trim();
 
         if (msg === "Failed to send OTP via SMS and call.") {
-          alert(msg);
-          clearInterval(countdown);
-          otpBtn.style.display = "block";
-          otpSection.style.display = "none";
-          otpBtn.disabled = false;
-          timer.textContent = "SORRY NO. IS NOT VERIFIED IN TWILIO";
+          // SMS failed, automatically send OTP via email (no alert)
+          const response = await fetch("http://localhost:3000/send-otp-booking", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Mail: email }),
+          });
+
+          const data = await response.json();
+
+          if (data.registered === false) {
+            alert("❌ Email not registered");
+            return;
+          }
+
+          if (data.message.includes("OTP sent")) {
+            alert("✅ OTP sent to your email!");
+            startOtpTimer();
+          }
         } else {
-          // ✅ Only start timer when OTP is actually sent
+          // If Twilio OTP sent successfully
           startOtpTimer();
         }
       } catch (err) {
-        console.error(err);
+        clearInterval(countdown);
+        otpBtn.style.display = "block";
+        otpSection.style.display = "none";
+        otpBtn.disabled = false;
+        timer.textContent = "Retry !!";
       }
     });
 
@@ -261,7 +290,6 @@
       let timeLeft = 60;
       otpSection.style.display = "block";
       otpBtn.disabled = true;
-      //timer.textContent = `You have ${timeLeft}s to enter OTP`;
       otpBtn.style.display = "none";
       document.getElementById("otp-input-section").style.display = "block";
       countdown = setInterval(() => {
@@ -278,16 +306,17 @@
         }
       }, 1000);
     }
+
     // Booking form submit handler
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const name = document.querySelectorAll(".co")[0].value.trim();
-      const phone = document.querySelectorAll(".co")[1].value.trim();
-      const vehicleNumber = document.querySelectorAll(".co")[2].value.trim();
-      const slot = document.querySelector("select").value;
+      let phone = document.querySelectorAll(".co")[1].value.trim();
+      const vehicleNumber = document.querySelectorAll(".co")[3].value.trim();
+      const slot = document.getElementById("slot-dropdown").value;
       const otp = otpInput.value.trim();
-      const stationId = document.querySelectorAll(".co")[3].value.trim();
+      const stationId = document.querySelectorAll(".co")[4].value.trim();
       const date = document.getElementById("booking-date").value;
 
       if (!name || !phone || !vehicleNumber || !slot || !otp || !date) {
@@ -295,6 +324,9 @@
         return;
       }
 
+      if (phone.length === 10 && !phone.startsWith('+')) {
+        phone = '+91' + phone;
+      }
       const bookingData = {
         name,
         phone,
@@ -303,8 +335,8 @@
         slot,
         otp,
         stationId,
-        user: localStorage.getItem("userUsername")
-
+        user: localStorage.getItem("userUsername"),
+        mail: document.getElementById("email-input").value.trim()
       };
 
       try {
@@ -321,15 +353,13 @@
           form.reset();
           document.getElementById("otp-input-section").style.display = "none";
           document.getElementById("otp-btn").disabled = false;
-          document.getElementById("otp-btn").style.display = "block"; // <-- Add this!
+          document.getElementById("otp-btn").style.display = "block";
           clearInterval(countdown);
           timer.textContent = "";
         } else {
-          console.log(result.message)
           alert("❌ " + result.message);
         }
       } catch (err) {
-        console.error(err);
         alert("Booking failed. Please try again.");
       }
     });

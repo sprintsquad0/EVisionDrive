@@ -1,134 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - EV ChargeEase</title>
-    <style>
-        a {
-            text-decoration: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - EV ChargeEase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+      color: #bfeef0;
+    }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('../Images/bgp.webp');
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+    .about-section {
+      max-width: 1100px;
+      margin: auto;
+      padding: 60px 20px;
+      text-align: center;
+    }
 
-        .about-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            text-align: center;
-        }
+    .team-section{
+        
+        margin-bottom: 150px;
+    }
+    .about-section h2 {
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+      color: #efef5c;
+    }
 
-        h2 {
-            color: #4CAF50;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      color: #adf9e7;
+    }
 
-        h4 {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 50px;
+    }
 
-        .highlight {
-            color: rgb(14, 19, 151);
-            font-size: 1.4em;
-            font-weight: bold;
-        }
+    .feature p{
+        color: #0f2027;
+    }
+    .feature {
+      flex: 1 1 250px;
+      background: #fff;
+      padding: 9px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
 
-        .about-list {
-            text-align: left;
-            margin-top: 15px;
-        }
+    .feature:hover {
+      transform: translateY(-6px);
+    }
 
-        .about-list li {
-            list-style: none;
-            padding: 8px 0;
-            font-size: 1.1em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .feature h2 {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: #0b5ed7;
+    }
 
-        .about-list li::before {
-            content: "⚡";
-            color: #4CAF50;
-        }
+    .team-section h4 {
+      font-size: 1.7rem;
+      margin-bottom: 20px;
+      color: #f1ef77;
+    }
 
-        .about-footer {
-            margin-top: 20px;
-            font-style: italic;
-            font-size: 1em;
-            color: #555;
-        }
+    .team {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
 
-        @media (max-width:600px) {
-            .about-container {
-                max-width: 280px;
-                margin: 50px auto;
-                padding: 20px;
-            }
+    .member {
+      background: #fff;
+      padding: 10px;
+      border-radius: 12px;
+      width: 200px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
 
-            .about-list li {
+    .member:hover {
+      transform: translateY(-6px);
+    }
 
-                padding: 8px 0;
-                margin-right: 30px;
+    .member img {
+      width: 100%;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
 
-                gap: 0px;
-            }
+    .member h5 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #333;
+    }
 
-            h4 {
-                font-size: 13px;
-            }
-
-            .highlight {
-                font-size: 16px;
-            }
-
-            .about-container li {
-                font-size: 13px;
-
-            }
-        }
-    </style>
+    .member p {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    #teamh{
+        margin-left: 20px;
+    }
+    
+  </style>
 </head>
-
 <body>
-    <div class="about-container">
-        <h2>About Us</h2>
-        <h4>Welcome To EV ChargeEase — Your Trusted Guide To Finding Electric Vehicle Charging Stations With Ease!</h4>
 
-        <h4>Our Goal Is To Make EV Travel Simpler By Helping You Discover Charging Stations Nearby, Along With Key
-            Details Like Location, Status, And Available Slots — All In One Place.</h4>
+  <section class="about-section">
+    <h2>About Us</h2>
+    <p>
+      Welcome to <strong>EV ChargeEase</strong> — your reliable guide to finding electric vehicle charging stations with ease!  
+      Our mission is to make EV travel <strong>smarter and stress-free</strong> by helping you locate nearby charging stations with real-time availability and slot capacity, all in one place.  
+    </p>
 
-        <span class="highlight">🔋 What We Offer:</span>
-
-        <ul class="about-list">
-            <li>🗺️ Find Nearby Stations: Easily Locate Charging Points Around You.</li>
-            <li>✅ Check Availability: See Station Status And Slot Capacity In Real-Time.</li>
-            <li>🔗 Quick Access To Maps: Get Directions To Your Chosen Station With One Tap.</li>
-        </ul>
-
-        <h4>We Believe In Empowering EV Owners With The Right Information — No Bookings, No Hassle, Just Smooth,
-            Sustainable Travel.</h4>
-
-        <div class="about-footer">
-            Charge Smarter, Drive Greener! 🌍<br><br>
-            <a href="">Developed By...<br>
-                <hr>Sprint Squad
-            </a>
-        </div>
+    <div class="features">
+      <div class="feature">
+        <h2>🗺️ Find Nearby Stations</h2>
+        <p>Easily discover charging points around you in seconds.</p>
+      </div>
+      <div class="feature">
+        <h2>✅ Check Availability</h2>
+        <p>Know real-time station status and slot capacity before you arrive.</p>
+      </div>
+      <div class="feature">
+        <h2>🔗 Quick Access</h2>
+        <p>Open maps and get instant directions with one tap.</p>
+      </div>
     </div>
-</body>
 
+    <p><strong>Charge Smarter. Drive Greener. 🌍</strong></p>
+  </section>
+
+  <section class="team-section">
+    <h4 id="teamh">Meet Our Team — Sprint Squad 🚀</h4>
+    <div class="team">
+      <div class="member">
+        <img src="../Images/umar.jpg" alt="Team Member">
+        <h5>Umar</h5>
+        <p>Full-Stack Developer <br> (Team Leader)</p>
+      </div>
+      <div class="member">
+        <img src="" alt="Team Member">
+        <h5>Kanchana</h5>
+        <p>Backend Developer</p>
+      </div>
+      <div class="member">
+        <img src="https://via.placeholder.com/200" alt="Team Member">
+        <h5>Rahim</h5>
+        <p>Backend Developer</p>
+      </div>
+      <div class="member">
+        <img src="https://via.placeholder.com/200" alt="Team Member">
+        <h5>Sri Vidya</h5>
+        <p>Researcher & Presentation Designer</p>
+      </div>
+       <div class="member">
+        <img src="../Images/vicky.jpg" id="v" alt="Team Member">
+        <h5>Vicky</h5>
+        <p>Frontend Developer</p>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    // Small JS effect: highlight team member clicked
+    const members = document.querySelectorAll(".member");
+    members.forEach(member => {
+      member.addEventListener("click", () => {
+        alert(`You clicked on ${member.querySelector("h4").innerText} 🚀`);
+      });
+    });
+  </script>
+
+</body>
 </html>

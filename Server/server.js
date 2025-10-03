@@ -568,32 +568,45 @@ const BookingSchema = new mongoose.Schema({
   date: String,
   slot: String,
   is_seen: { type: Boolean, default: false },
-  user: String
+  user: String,
+  email: String
 });
 
 const BookingModel = mongoose.model("BookingModel", BookingSchema);
 
-//User fills booking form + OTP → one click to submit
+
 app.post("/api/book-slot", async (req, res) => {
-  const { name, phone, vehicleNumber, date, slot, otp, stationId ,user} = req.body;
+  const { name, phone, vehicleNumber, date, slot, otp, stationId, user, mail } = req.body;
+
 
   try {
-    const existingOtp = await Otp.findOne({ phone }).sort({ createdAt: -1 });
-    console.log(existingOtp)
-    console.log(otp)
-    if (!existingOtp || existingOtp.otp !== otp) {
+    // 1. Get latest OTPs for phone and email
+    const phoneOtpDoc = await Otp.findOne({ phone }).sort({ createdAt: -1 });
+    const emailOtpDoc = await EmailOtp.findOne({ email: mail }).sort({ createdAt: -1 });
+
+    // 2. Check validity
+    const phoneValid = phoneOtpDoc && phoneOtpDoc.otp === otp;
+    const emailValid = emailOtpDoc && emailOtpDoc.otp === otp;
+
+    if (!phoneValid && !emailValid) {
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 
-    await Otp.deleteMany({ phone });
+    // 3. Clean up used OTP
+    if (phoneValid) {
+      await Otp.deleteMany({ phone });
+    }
+    if (emailValid) {
+      await EmailOtp.deleteMany({ email: mail });
+    }
 
-    // Check if station exists
+    // 4. Check if station exists
     const station = await StationCreation.findById(stationId);
     if (!station) {
       return res.status(404).json({ message: "Station not found" });
     }
 
-    // Check slot availability
+    // 5. Check slot availability
     const existingBooking = await BookingModel.findOne({
       stationId: station._id,
       date,
@@ -604,7 +617,7 @@ app.post("/api/book-slot", async (req, res) => {
       return res.status(409).json({ message: "Slot already booked for this station!" });
     }
 
-    // Save booking
+    // 6. Save booking
     await BookingModel.create({
       stationId: station._id,
       name,
@@ -612,7 +625,8 @@ app.post("/api/book-slot", async (req, res) => {
       vehicleNumber,
       date,
       slot,
-      user
+      user,
+      email: mail
     });
 
     res.status(200).json({ message: "Booking successful!" });
@@ -622,6 +636,7 @@ app.post("/api/book-slot", async (req, res) => {
     res.status(500).json({ message: "Booking failed", error: err.message });
   }
 });
+
 
 
 //filtering slots 
@@ -749,6 +764,85 @@ Team Sprint Squad`,
   }
 });
 
+
+const emailOtpSchema = new mongoose.Schema({
+  email: { type: String, required: true },
+  otp: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now, expires: 300 } // 5 mins expiry
+});
+
+const EmailOtp = mongoose.model('EmailOtp', emailOtpSchema);
+
+app.post("/send-otp-booking", async (req, res) => {
+  const { Mail } = req.body;
+  const user = await UserRegisters.findOne({ Mail });
+  
+
+  if (!user) {
+    return res.json({ registered: false, message: "❌ Email not registered" });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+
+  // Replace old OTP if exists
+  await EmailOtp.findOneAndUpdate(
+    { email: Mail },
+    { otp, otpExpiry: expiry },
+    { upsert: true, new: true }
+  );
+
+  // Send OTP via SendGrid
+  const transporter = nodemailer.createTransport({
+    host: "smtp.sendgrid.net",
+    port: 587,
+    secure: false,
+    auth: {
+      user: "apikey",
+      pass: process.env.SENDGRID_API_KEY
+    }
+  });
+
+  try {
+    await transporter.sendMail({
+    from: "duotechcodex@gmail.com", // Verified Sender In SendGrid
+    to: Mail,
+    subject: "🔐 Your One-Time Password (OTP)",
+    text: `Hello Member,
+
+Your One-Time Password (OTP) Is: ${otp}
+
+Please Use This Code To Complete Your Verification.
+This Code Will Expire In 5 Minutes For Security Reasons.
+
+If You Did Not Request This, You Can Safely Ignore This Email.
+
+Best Regards,
+Team Sprint Squad`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2>🔐 Verification Required</h2>
+        <p>Hello Member,</p>
+        <p>Your One-Time Password (OTP) Is:</p>
+        <h1 style="color:#4caf50;">${otp}</h1>
+        <p>Please Enter This Code To Complete Your Verification.<br>
+        <b>Note:</b> This Code Will Expire In <b>5 Minutes</b>.</p>
+        <p>If You Did Not Request This Code, You Can Ignore This Email.</p>
+        <br>
+        <p>Best Regards,<br><b>Team Sprint Squad</b></p>
+      </div>
+    `
+  });
+
+  
+    res.json({ registered: true, message: "✅ OTP sent to email" });
+  } catch (error) {
+    console.error("SendGrid error:", error);
+    res.status(500).json({ registered: true, message: "❌ Failed to send OTP" });
+  }
+});
+
+
 // ✅ Verify OTP route
 app.post("/verify-otp", async (req, res) => {
   const { Mail, otp } = req.body;
@@ -763,6 +857,31 @@ app.post("/verify-otp", async (req, res) => {
 
   res.json({ message: "✅ OTP verified successfully" });
 });
+
+app.post("/verify-otpss", async (req, res) => {
+  const { Mail, otp } = req.body;
+
+  const record = await ForgetpassOTP.findOne({ email: Mail, otp });
+
+  if (!record) return res.json({ message: "❌ Invalid OTP" });
+  if (Date.now() > record.otpExpiry) return res.json({ message: "⚠️ OTP expired" });
+
+  // Delete OTP after successful verification
+  //await ForgetpassOTP.deleteOne({ email: Mail });
+
+
+
+  const newOtp = new Otp({
+  phone: Mail,  // if you changed the field name from phone → contact
+  otp: otp
+});
+
+newOtp.save()
+  .then(() => console.log('OTP saved successfully'))
+  .catch(err => console.error('Error saving OTP:', err));
+  res.json({ message: "✅ OTP verified successfully"});
+});
+
 
 // ✅ Reset Password route
 app.post("/reset-password", async (req, res) => {
