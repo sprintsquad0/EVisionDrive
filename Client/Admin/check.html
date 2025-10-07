@@ -89,54 +89,69 @@
         }
 
         if (!stationId) {
-            container.textContent = "No station ID provided in URL.";
-        } else {
+    container.textContent = "No station ID provided in URL.";
+} else {
+    // First, get isbooking value
+    fetch(`http://localhost:3000/stations/${stationId}/isbooking`)
+        .then(response => response.json())
+        .then(station => {
+            const isbooking = station.message;
+            console.log("Is booking enabled for this station?", isbooking);
+            if (isbooking === false) {
+                        container.textContent = "Bookings are not available for this station.";
+                        return;
+                    }
+            // Now fetch bookings
             fetch(`http://localhost:3000/stations/${stationId}/bookings`)
-  .then(response => {
-    if (!response.ok) throw new Error("Network response was not ok");
-    return response.json();
-  })
-  .then(bookings => {
-    if (!bookings.length) {
-      container.textContent = "No bookings found for this station.";
-      return;
-    }
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
+                .then(bookings => {
+                    
+                    if (!bookings.length) {
+                        container.textContent = "No bookings found for this station.";
+                        return;
+                    }
 
-    container.innerHTML = "";
+                    container.innerHTML = "";
 
-    const now = new Date();
+                    const now = new Date();
 
-    bookings.forEach(booking => {
-      const bookingDate = new Date(booking.date);
-      let color = "";
+                    bookings.forEach(booking => {
+                        const bookingDate = new Date(booking.date);
+                        let color = "";
 
-      if (bookingDate > now) {
-        color = "green"; 
-      } else if (bookingDate.toDateString() === now.toDateString()) {
-        color = "yellow"; 
-      } else {
-        color = "grey";
-      }
+                        if (bookingDate > now) {
+                            color = "green";
+                        } else if (bookingDate.toDateString() === now.toDateString()) {
+                            color = "yellow";
+                        } else {
+                            color = "grey";
+                        }
 
-      const card = document.createElement("div");
-      card.className = "booking-card";
-      card.style.backgroundColor = color; 
-      card.innerHTML = `
-        <p><span>Name:</span> ${booking.name}</p>
-        <p><span>Phone:</span> ${booking.phone}</p>
-        <p><span>Vehicle Number:</span> ${booking.vehicleNumber}</p>
-        <p><span>Date:</span> ${booking.date}</p>
-        <p><span>Slot:</span> ${booking.slot}</p>
-      `;
-      container.appendChild(card);
-    });
-  })
-  .catch(err => {
-    console.error("Error fetching booking history:", err);
-    container.textContent = "Error loading booking history.";
-  });
-
-        }
+                        const card = document.createElement("div");
+                        card.className = "booking-card";
+                        card.style.backgroundColor = color;
+                        card.innerHTML = `
+                            <p><span>Name:</span> ${booking.name}</p>
+                            <p><span>Phone:</span> ${booking.phone}</p>
+                            <p><span>Vehicle Number:</span> ${booking.vehicleNumber}</p>
+                            <p><span>Date:</span> ${booking.date}</p>
+                            <p><span>Slot:</span> ${booking.slot}</p>
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching booking history:", err);
+                    container.textContent = "Error loading booking history.";
+                });
+        })
+        .catch(() => {
+            container.textContent = "Bookings are not available for this station.";
+        });
+}
     </script>
 </body>
 

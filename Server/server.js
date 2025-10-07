@@ -224,7 +224,7 @@ const stationSchema = new mongoose.Schema({
   slots: Number,
   status: String,
   update: String,
-  check: { type: Boolean, default: false },
+  booking: { type: Boolean, default: false },
   
 });
 
@@ -240,7 +240,7 @@ app.get("/admin", (req, res) => {
 
 // POST Route for Station Creation (No GET needed for form!)
 app.post("/admin/create-station", async (req, res) => {
-  const { name, tel, location, MapURL = "", slots, status, update, check } = req.body;
+  const { name, tel, location, MapURL = "", slots, status, update, booking } = req.body;
 
   try {
     const existingStation = await StationCreation.findOne({
@@ -251,7 +251,7 @@ app.post("/admin/create-station", async (req, res) => {
     if (existingStation) {
       return res.status(400).send("Station already exists!");
     }
-    const isBookingEnabled = check === "on";
+    const isBookingEnabled = booking === true || booking === "on";
 
 
     const newStation = new StationCreation({
@@ -262,20 +262,12 @@ app.post("/admin/create-station", async (req, res) => {
       slots,
       status,
       update,
-      check: isBookingEnabled
+      booking: isBookingEnabled
     });
 
     await newStation.save();
     res.json(newStation);
     
-    /*
-    res.send(
-      `<script>
-         alert("Station Created Successfully!");
-         window.location.href = "/Admin/station.html";
-       </script>`
-    );
-    */
 
   } catch (err) {
     console.error(err);
@@ -295,9 +287,16 @@ app.get("/stations/:id", async (req, res) => {
   }
 });
 
-
-
-
+app.get("/stations/:id/isbooking",async (req, res) => {
+  try {
+    const station = await StationCreation.findById(req.params.id);
+    if (!station) return res.status(404).json({ error: "Station not found" });
+    res.json({ message: station.booking });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "sorry" });
+  }
+});
 
 app.get("/stations/:id/bookings", async (req, res) => {
   try {
@@ -370,6 +369,7 @@ app.get("/:username/historybookings", async (req, res) => {
 
 app.get("/api/stations", async (req, res) => {
   try {
+    
     const stations = await StationCreation.find({});
     res.json(stations);
   } catch (err) {
@@ -1064,6 +1064,20 @@ app.get("/api/stations/low-slots", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch low slot stations." });
   }
 
+});
+
+app.get("/api/stations/no-booking", async(req, res) => {
+  console.log("Entered no-booking route");
+  try {
+    console.log("Fetching stations with no booking availability...");
+    const noBookingStations = await StationCreation.find({ booking: false});
+    console.log("No booking stations:", noBookingStations);
+    console.log("Count of no booking stations:", noBookingStations.length);
+    res.json({ count: noBookingStations.length});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch stations with no booking availability." });
+  }
 });
 
 app.listen(port, () => {

@@ -149,6 +149,10 @@
                 <p id="total-stations"></p>
             </div>
             <div class="dashboard-widget">
+                <h3>Stations with No Booking Availability</h3>
+                <p id="no-booking-availability"></p>
+            </div>
+            <div class="dashboard-widget">
                 <h3>Low Slots Remaining Stations</h3>
                 <p id="low-slots-remaining"></p>
             </div>
@@ -162,6 +166,7 @@
                 'total-bookings': { url: 'http://localhost:3000/api/bookings/count', max: 70 },
                 'during-bookings': { url: 'http://localhost:3000/api/bookings/during', max: 20 },
                 'total-stations': { url: 'http://localhost:3000/api/stations/count', max: 50 },
+                'no-booking-availability': { url: 'http://localhost:3000/api/stations/no-booking', max: 10 },
                 'low-slots-remaining': { url: 'http://localhost:3000/api/stations/low-slots', max: 30 }
             };
 
@@ -173,6 +178,7 @@
                     .then(response => response.json())
                     .then(data => {
                         const count = data.count;
+                        console.log(`Fetched data for ${id}:`, count);
                         pElement.textContent = count;
                         
                         const percentage = (count / max) * 100;

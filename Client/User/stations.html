@@ -121,6 +121,7 @@
         let stationsData = [];
         const spinner=document.getElementById("spinner")
 
+        
         async function RetrieveData() {
             try {
                 spinner.style.display="block"
@@ -137,31 +138,53 @@
 
                 stationsData = await response.json();
                 stationsData.sort((a, b) => a.location.localeCompare(b.location));
+
+                
+
                 renderStations(stationsData);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         }
 
-        function renderStations(data) {
+        async function renderStations(data) {
             const container = document.getElementById("Stations");
             container.innerHTML = "";
 
+            
             if (data.length === 0) {
                 container.innerHTML = "<p style='color:white'>No Stations Available!</p>";
                 return;
             }
+            
+            for (const station of data) {
 
-            data.forEach((station) => {
+                const isBooking = await fetch(`http://localhost:3000/stations/${station._id}/isbooking`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => res.json()).then(resdata => {
+                if (!resdata.message) {
+                    return false;
+            }
+                return resdata.message;
+            });
                 const dataDiv = document.createElement("div");
                 dataDiv.className = "slots";
-                dataDiv.innerHTML = `
-                <strong><span id="ww">Id:</span></strong> ${station._id}<br>
+                
+                dataDiv.innerHTML = 
+                    `
+                    ${isBooking ? `<strong><span id="ww">Id:</span></strong> ${station._id}<br>` : `<strong>SORRY BOOKINGS ARE NOT AVAILABLE TO THIS STATION<br></strong><br/>`}
+            
+
                      <strong><span id="ww">Station:</span></strong> ${station.name}<br>
                       <strong><span id="ww">Location:</span></strong> ${station.location}<br>
                      <strong><span id="we">Service Number:</span></strong><a href="tel:${station.tel}">${station.tel}</a><br>
                      ${station.MapURL ? `<a href="${station.MapURL}" target="_blank" rel="noopener noreferrer">View on Map</a>` : `<span style="color: #da6ef5;">No map link available</span>`}<br>
-                     <strong>Slots:</strong> <span class="slots" id="slots-${station._id}" data-slots="${station.slots}">${station.slots}</span><br>
+
+
+                     ${isBooking ? `<strong>Slots:</strong> <span class="slots" id="slots-${station._id}" data-slots="${station.slots}">${station.slots}</span><br>` : `<strong>Slot Availabilities Are Unknown, Contact Service Num About Slot Availability<br></strong>`}
                      <strong>Status:</strong><span id="status-${station._id}" data-status="${station.status}"> ${station.status}</span><br>
                      <strong>Updated On:</strong> ${station.update}<hr>
                 `;
@@ -188,15 +211,17 @@
                     Statusel.style.lineHeight = "30px";
                 }
 
-                const slotss = document.getElementById(`slots-${station._id}`).getAttribute("data-slots");
-                if ((slotss <= 3 && slotss > 0) && (Status === "Active" || Status === "active")) {
-                    dataDiv.style.background = "#f7766d";
-                } else if ((slotss <= 7 && slotss > 3) && (Status === "Active" || Status === "active")) {
-                    dataDiv.style.background = "#f1f584";
-                } else if ((Status === "Active" || Status === "active")) {
-                    dataDiv.style.background = "#86f7aa";
-                }
-            });
+                const slotSpan = document.getElementById(`slots-${station._id}`);
+const slotss = slotSpan ? slotSpan.getAttribute("data-slots") : null;
+
+if (slotss !== null && (slotss <= 3 && slotss > 0) && (Status === "Active" || Status === "active")) {
+    dataDiv.style.background = "#f7766d";
+} else if (slotss !== null && (slotss <= 7 && slotss > 3) && (Status === "Active" || Status === "active")) {
+    dataDiv.style.background = "#f1f584";
+} else if (slotss !== null && (Status === "Active" || Status === "active")) {
+    dataDiv.style.background = "#90ee90";
+}
+            }
         }
 
         function filterStations() {

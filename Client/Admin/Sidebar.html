@@ -111,94 +111,9 @@
 
 <script>
   const stationsContainer = document.getElementById("stationsContainer");
-/*
-function addStationLink(station) {
-  const link = document.createElement("a");
-  link.href = `check.html?id=${station._id}`;
-  link.target = "main";
-  link.style.position = "relative";
-  link.style.display = "flex";
-  link.style.justifyContent = "space-between";
-  link.style.alignItems = "center";
-  link.style.width = "130px";
-  link.style.padding = "12px 10px";
-  link.style.borderRadius = "8px";
-  link.style.boxShadow = "0 4px 8px rgba(0,0,0,0.7)";
-  link.style.transition = "all 0.3s ease";
-  link.style.fontSize = "13px";
-  link.style.fontWeight = "bold";
-  link.style.letterSpacing = "1px";
-  link.style.color = "#fff";
-  link.style.textDecoration = "none";
-  link.style.marginTop = "15px";
 
-  const spanText = document.createElement("span");
-  spanText.textContent = station.name;
-  link.appendChild(spanText);
 
-  // Append immediately
-  stationsContainer.appendChild(link);
-
-  // Fetch unseen bookings count
-  fetch(`http://localhost:3000/stations/${station._id}/bookings/unseen`)
-    .then(res => res.json())
-    .then(data => {
-      console.log("Unseen bookings for station", station.name, ":", data);
-      const count = data.count;
-
-      const length = data.length;
-
-      if (length > 0) {
-        link.style.background = "rgba(52, 202, 239, 0.8)";
-      } else {
-        link.style.background = "lightgrey";
-        link.style.color = "#555";
-      }
-      if (count > 0) {
-        // Badge
-        const badge = document.createElement("span");
-        badge.textContent = count > 9 ? "9+" : count; // optional limit
-        badge.style.position = "absolute";
-        badge.style.top = "5px";
-        badge.style.right = "5px";
-        badge.style.background = "red";
-        badge.style.color = "#fff";
-        badge.style.fontSize = "10px";
-        badge.style.fontWeight = "bold";
-        badge.style.borderRadius = "50%";
-        badge.style.padding = "2px 6px";
-        badge.classList.add("booking-badge"); // optional for future removal
-        link.appendChild(badge);
-      }
-
-      // Style based on bookings
-      link.style.background = count > 0 ? "rgba(52, 202, 239, 0.8)" : "lightgrey";
-      link.style.color = count > 0 ? "#fff" : "#555";
-    })
-    .catch(err => console.error(err));
-
-  // Hover effect
-  link.addEventListener("mouseenter", () => {
-    link.style.background = "rgba(56, 142, 60, 0.9)";
-    link.style.transform = "translateY(-2px)";
-  });
-  link.addEventListener("mouseleave", () => {
-    link.style.background = "rgba(52, 202, 239, 0.8)";
-    link.style.transform = "translateY(0)";
-  });
-
-  // On click → mark bookings as seen & remove badge
-  link.addEventListener("click", () => {
-    const badge = link.querySelector(".booking-badge");
-    if (badge) badge.remove(); // remove red dot
-
-    fetch(`http://localhost:3000/stations/${station._id}/bookings/mark-seen`, {
-      method: "POST"
-    }).catch(err => console.error(err));
-  });
-}*/
-
-function addStationLink(station) {
+function addStationLink(station, isBooking) {
   const link = document.createElement("a");
   link.href = `check.html?id=${station._id}`;
   link.target = "main";
@@ -223,8 +138,17 @@ function addStationLink(station) {
   link.appendChild(spanText);
   stationsContainer.appendChild(link);
 
+  console.log("isBooking value for station", station._id, ":", isBooking);
+  if (!isBooking) {
+
+    link.style.background = "lightgrey";
+    link.style.color = "#555";
+    return; 
+  }
   let hasBookings = false;
 
+   link.style.background = "red";
+  link.style.color = "#fff";
   fetch(`http://localhost:3000/stations/${station._id}/bookings/unseen`)
     .then(res => res.json())
     .then(data => {
@@ -232,7 +156,8 @@ function addStationLink(station) {
       const length = data.length;
       hasBookings = length > 0;
 
-      link.style.background = hasBookings ? "rgba(52, 202, 239, 0.8)" : "lightgrey";
+
+      link.style.background = hasBookings ? "rgba(52, 202, 239, 0.8)" : "aqua";
       link.style.color = hasBookings ? "#fff" : "#555";
 
       if (count > 0) {
@@ -260,10 +185,18 @@ function addStationLink(station) {
   });
 
   link.addEventListener("mouseleave", () => {
-    link.style.background = hasBookings ? "rgba(52, 202, 239, 0.8)" : "lightgrey";
-    link.style.color = hasBookings ? "#fff" : "#555";
-    link.style.transform = "translateY(0)";
-  });
+  if (!isBooking) {
+    link.style.background = "lightgrey";
+    link.style.color = "#555";
+  } else if (!hasBookings) {
+    link.style.background = "aqua";
+    link.style.color = "#555";
+  } else {
+    link.style.background = "rgba(52, 202, 239, 0.8)";
+    link.style.color = "#fff";
+  }
+  link.style.transform = "translateY(0)";
+});
 
   link.addEventListener("click", () => {
     const badge = link.querySelector(".booking-badge");
@@ -273,69 +206,40 @@ function addStationLink(station) {
   });
 }
 
-
 /*
- function addStationLink(station) {
-  const link = document.createElement("a");
-  link.textContent = station.name;
-  link.href = `check.html?id=${station._id}`;
-  link.target = "main";
-
-  // Common styles
-  link.style.display = "flex";
-  link.style.justifyContent = "space-between";
-  link.style.alignItems = "center";
-  link.style.width = "130px";
-  link.style.padding = "12px 10px";
-  link.style.borderRadius = "8px";
-  link.style.boxShadow = "0 4px 8px rgba(0,0,0,0.7)";
-  link.style.transition = "all 0.3s ease";
-  link.style.fontSize = "13px";
-  link.style.fontWeight = "bold";
-  link.style.letterSpacing = "1px";
-  link.style.color = "#fff";
-  link.style.textDecoration = "none";
-  link.style.marginTop = "15px";
-
-  // Fetch bookings for this station
-  fetch(`http://localhost:3000/stations/${station._id}/bookings`)
-    .then(response => {
-      if (!response.ok) throw new Error("Network response was not ok");
-      return response.json();
-    })
-    .then(bookings => {
-      if (bookings.length > 0) {
-        link.style.background = "rgba(52, 202, 239, 0.8)";
-        // Hover effect
-        link.addEventListener("mouseenter", () => {
-          link.style.background = "rgba(56, 142, 60, 0.9)";
-          link.style.transform = "translateY(-2px)";
-        });
-        link.addEventListener("mouseleave", () => {
-          link.style.background = "rgba(52, 202, 239, 0.8)";
-          link.style.transform = "translateY(0)";
-        });
-      } else {
-        // No bookings
-        link.style.background = "lightgrey";
-        link.style.color = "#555";
-        
-      }
-
-      // Append after fetch completes
-      stationsContainer.appendChild(link);
-    })
-    .catch(err => console.error(err));
-}
-
-*/
 
   window.addEventListener("DOMContentLoaded", () => {
+    
     fetch("http://localhost:3000/api/stations")
+
       .then(res => res.json())
-      .then(data => data.forEach(station => addStationLink(station)))
+      .then(data => data.forEach(station => addStationLink(station,isbooking)))
       .catch(err => console.error(err));
   });
+
+  */
+  window.addEventListener("DOMContentLoaded", () => {
+  fetch("http://localhost:3000/api/stations")
+    .then(res => res.json())
+    .then(data => {
+      console.log("Stations data:", data);
+      data.forEach(station => {
+        // Fetch isbooking for each station
+        fetch(`http://localhost:3000/stations/${station._id}/isbooking`)
+          .then(res => res.json())
+          .then(isbookingData => {
+            const isbooking = isbookingData.message;
+            console.log(isbooking);
+            addStationLink(station, isbooking); // Pass both station and isbooking
+          })
+          .catch(err => {
+            console.error(err);
+            addStationLink(station, false); // Default to false if error
+          });
+      });
+    })
+    .catch(err => console.error(err));
+});
 
   window.addEventListener("message", (event) => {
     if (event.data.type === "NEW_STATION") {
