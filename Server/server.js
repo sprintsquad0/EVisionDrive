@@ -133,7 +133,7 @@ app.post("/adminreg", async (req, res) => {
     }
 
     // Check if username, email, or phone already exists
-    const existingUser = await UserRegisters.findOne({
+    const existingUser = await AdminRegisters.findOne({
       $or: [{ Username }, { Mail }, { Phone }],
     });
 
@@ -287,16 +287,24 @@ app.get("/stations/:id", async (req, res) => {
   }
 });
 
-app.get("/stations/:id/isbooking",async (req, res) => {
+app.get("/stations/:id/isbooking", async (req, res) => {
   try {
     const station = await StationCreation.findById(req.params.id);
     if (!station) return res.status(404).json({ error: "Station not found" });
-    res.json({ message: station.booking });
+
+    if (station.status !== "Active") {
+      return res.json({ message: station.booking, status: false });
+    }
+    console.log("BACKEND ---- Booking status for station", req.params.id, "is", station.booking,"and status is", station.status);
+
+    res.json({ message: station.booking, status: true });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "sorry" });
   }
 });
+
 
 app.get("/stations/:id/bookings", async (req, res) => {
   try {
@@ -841,6 +849,80 @@ Team Sprint Squad`,
     res.status(500).json({ registered: true, message: "❌ Failed to send OTP" });
   }
 });
+
+
+
+app.post("/admin-signup-otp", async (req, res) => {
+  const { Mail } = req.body;
+  const admin = await AdminRegisters.findOne({ Mail });
+  console.log(Mail)
+
+  if (admin) {
+    return res.json({registered: false, message: "❌ Email already registered" });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+
+  // Replace old OTP if exists
+  await EmailOtp.findOneAndUpdate(
+    { email: Mail },
+    { otp, otpExpiry: expiry },
+    { upsert: true, new: true }
+  );
+
+  // Send OTP via SendGrid
+  const transporter = nodemailer.createTransport({
+    host: "smtp.sendgrid.net",
+    port: 587,
+    secure: false,
+    auth: {
+      user: "apikey",
+      pass: process.env.SENDGRID_API_KEY
+    }
+  });
+
+  try {
+    await transporter.sendMail({
+    from: "duotechcodex@gmail.com", // Verified Sender In SendGrid
+    to: Mail,
+    subject: "🔐 Your One-Time Password (OTP)",
+    text: `Hello ADMIN Member,
+
+Your One-Time Password (OTP) Is: ${otp}
+
+Please Use This Code To Complete Your Verification.
+This Code Will Expire In 5 Minutes For Security Reasons.
+
+If You Did Not Request This, You Can Safely Ignore This Email.
+
+Best Regards,
+Team Sprint Squad`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2>🔐 Verification Required</h2>
+        <p>Hello Member,</p>
+        <p>Your One-Time Password (OTP) Is:</p>
+        <h1 style="color:#4caf50;">${otp}</h1>
+        <p>Please Enter This Code To Complete Your Verification.<br>
+        <b>Note:</b> This Code Will Expire In <b>5 Minutes</b>.</p>
+        <p>If You Did Not Request This Code, You Can Ignore This Email.</p>
+        <br>
+        <p>Best Regards,<br><b>Team Sprint Squad</b></p>
+      </div>
+    `
+  });
+
+
+
+    res.json({ registered: true, message: "✅ OTP sent to email" , otp });
+  } catch (error) {
+    console.error("SendGrid error:", error);
+    res.status(500).json({ registered: true, message: "❌ Failed to send OTP" });
+  }
+});
+
+
 
 
 // ✅ Verify OTP route

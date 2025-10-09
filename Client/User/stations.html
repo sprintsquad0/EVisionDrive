@@ -168,27 +168,47 @@
                 if (!resdata.message) {
                     return false;
             }
-                return resdata.message;
+                 return {
+    message: resdata.message,
+    status: resdata.status
+  };
             });
                 const dataDiv = document.createElement("div");
                 dataDiv.className = "slots";
-                
+
+                    console.log("frontend ---- Booking status for station", station._id, "is", isBooking.message,"and status is", isBooking.status);
+
+                    /*
+                    status
+    ? (booking ? "ID" : "No Booking")
+    : (booking ? "RN" : "No Booking");
+
+
+                    */
                 dataDiv.innerHTML = 
                     `
-                    ${isBooking ? `<strong><span id="ww">Id:</span></strong> ${station._id}<br>` : `<strong>SORRY BOOKINGS ARE NOT AVAILABLE TO THIS STATION<br></strong><br/>`}
+                   
             
+                    ${isBooking.status
+  ? (isBooking.message
+      ? `<strong><span id="ww">Id:</span></strong> ${station._id}<br>`
+      : `<strong>SORRY BOOKINGS ARE NOT AVAILABLE TO THIS STATION<br></strong><br/>`)
+  : (isBooking.message
+      ? `<strong>Bookings are not allowed right now</strong><br/>`
+      : `<strong>SORRY BOOKINGS ARE NOT AVAILABLE TO THIS STATION</strong><br/>`)}
+
 
                      <strong><span id="ww">Station:</span></strong> ${station.name}<br>
                       <strong><span id="ww">Location:</span></strong> ${station.location}<br>
                      <strong><span id="we">Service Number:</span></strong><a href="tel:${station.tel}">${station.tel}</a><br>
                      ${station.MapURL ? `<a href="${station.MapURL}" target="_blank" rel="noopener noreferrer">View on Map</a>` : `<span style="color: #da6ef5;">No map link available</span>`}<br>
-
-
-                     ${isBooking ? `<strong>Slots:</strong> <span class="slots" id="slots-${station._id}" data-slots="${station.slots}">${station.slots}</span><br>` : `<strong>Slot Availabilities Are Unknown, Contact Service Num About Slot Availability<br></strong>`}
+                     <strong>Slots:</strong> <span class="slots" id="slots-${station._id}" data-slots="${station.slots}">${station.slots}</span><br>
+                     
                      <strong>Status:</strong><span id="status-${station._id}" data-status="${station.status}"> ${station.status}</span><br>
                      <strong>Updated On:</strong> ${station.update}<hr>
                 `;
 
+                //${isBooking ? `<strong>Slots:</strong> <span class="slots" id="slots-${station._id}" data-slots="${station.slots}">${station.slots}</span><br>` : `<strong>Slot Availabilities Are Unknown, Contact Service Num About Slot Availability<br></strong>`}
                 dataDiv.style.marginTop = "14px";
                 dataDiv.style.borderRadius = "22px";
                 dataDiv.style.padding = "14px";
