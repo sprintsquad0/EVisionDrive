@@ -162,12 +162,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const metrics = {
-                'total-users': { url: 'http://localhost:3000/api/users/count', max: 50 },
-                'total-bookings': { url: 'http://localhost:3000/api/bookings/count', max: 70 },
-                'during-bookings': { url: 'http://localhost:3000/api/bookings/during', max: 20 },
-                'total-stations': { url: 'http://localhost:3000/api/stations/count', max: 50 },
-                'no-booking-availability': { url: 'http://localhost:3000/api/stations/no-booking', max: 10 },
-                'low-slots-remaining': { url: 'http://localhost:3000/api/stations/low-slots', max: 30 }
+                'total-users': { url: 'https://e-vision-drive-q4p2.vercel.app/api/users/count', max: 50 },
+                'total-bookings': { url: 'https://e-vision-drive-q4p2.vercel.app/api/bookings/count', max: 70 },
+                'during-bookings': { url: 'https://e-vision-drive-q4p2.vercel.app/api/bookings/during', max: 20 },
+                'total-stations': { url: 'https://e-vision-drive-q4p2.vercel.app/api/stations/count', max: 50 },
+                'no-booking-availability': { url: 'https://e-vision-drive-q4p2.vercel.app/api/stations/no-booking', max: 10 },
+                'low-slots-remaining': { url: 'https://e-vision-drive-q4p2.vercel.app/api/stations/low-slots', max: 30 }
             };
 
             for (const id in metrics) {
