@@ -175,7 +175,7 @@
       }
 
       try {
-        const res = await fetch(`http://localhost:3000/api/available-slots?stationId=${stationId}&date=${date}`);
+        const res = await fetch(`https://e-vision-drive-q4p2.vercel.app/api/available-slots?stationId=${stationId}&date=${date}`);
         const data = await res.json();
 
         const allSlots = [
@@ -243,7 +243,7 @@
       }
 
       try {
-        const res = await fetch("http://localhost:3000/call-otp", {
+        const res = await fetch("https://e-vision-drive-q4p2.vercel.app/call-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ to: phone }),
@@ -254,7 +254,7 @@
 
         if (msg === "Failed to send OTP via SMS and call.") {
           // SMS failed, automatically send OTP via email (no alert)
-          const response = await fetch("http://localhost:3000/send-otp-booking", {
+          const response = await fetch("https://e-vision-drive-q4p2.vercel.app/send-otp-booking", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email }),
@@ -339,7 +339,7 @@
       };
 
       try {
-        const res = await fetch("http://localhost:3000/api/book-slot", {
+        const res = await fetch("https://e-vision-drive-q4p2.vercel.app/api/book-slot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(bookingData),
