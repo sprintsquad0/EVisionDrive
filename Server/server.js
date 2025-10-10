@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import cors from "cors";
 import path from "path";
-app.use(cors({ origin: "http://127.0.0.1:5500" }));
+app.use(cors({ origin: "https://e-vision-drive.vercel.app/" }));
 import twilio from "twilio"
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
