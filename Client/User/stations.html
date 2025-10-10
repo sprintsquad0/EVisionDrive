@@ -125,7 +125,7 @@
         async function RetrieveData() {
             try {
                 spinner.style.display="block"
-                const response = await fetch("http://localhost:3000/user/rtvstations", {
+                const response = await fetch("https://e-vision-drive-q4p2.vercel.app/user/rtvstations", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
@@ -159,7 +159,7 @@
             
             for (const station of data) {
 
-                const isBooking = await fetch(`http://localhost:3000/stations/${station._id}/isbooking`,{
+                const isBooking = await fetch(`https://e-vision-drive-q4p2.vercel.app/stations/${station._id}/isbooking`,{
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -208,7 +208,6 @@
                      <strong>Updated On:</strong> ${station.update}<hr>
                 `;
 
-                //${isBooking ? `<strong>Slots:</strong> <span class="slots" id="slots-${station._id}" data-slots="${station.slots}">${station.slots}</span><br>` : `<strong>Slot Availabilities Are Unknown, Contact Service Num About Slot Availability<br></strong>`}
                 dataDiv.style.marginTop = "14px";
                 dataDiv.style.borderRadius = "22px";
                 dataDiv.style.padding = "14px";
