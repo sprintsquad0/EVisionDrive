@@ -92,7 +92,7 @@
     container.textContent = "No station ID provided in URL.";
 } else {
     // First, get isbooking value
-    fetch(`https://e-vision-drive-q4p2.vercel.app/stations/${stationId}/isbooking`)
+    fetch(`https://e-vision-drive-main.vercel.app/stations/${stationId}/isbooking`)
         .then(response => response.json())
         .then(station => {
             const isbooking = station.message;
@@ -102,7 +102,7 @@
                         return;
                     }
             // Now fetch bookings
-            fetch(`https://e-vision-drive-q4p2.vercel.app/stations/${stationId}/bookings`)
+            fetch(`https://e-vision-drive-main.vercel.app/stations/${stationId}/bookings`)
                 .then(response => {
                     if (!response.ok) throw new Error("Network response was not ok");
                     return response.json();
