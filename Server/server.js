@@ -447,6 +447,8 @@ app.get("/admin/profiledata/:Username", async (req, res) => {
     const { Username } = req.params; // Extracts Username from the URL
     const data = await AdminRegisters.findOne({ Username }); // findOne instead of find (returns a single user)
 
+    console.log(data)
+    console.log(Username)
     if (!data) {
       return res.status(404).json({ message: "Admin not found" });
     }
