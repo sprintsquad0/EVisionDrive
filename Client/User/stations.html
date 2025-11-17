@@ -125,7 +125,7 @@
         async function RetrieveData() {
             try {
                 spinner.style.display="block"
-                const response = await fetch("https://e-vision-drive-main.vercel.app/user/rtvstations", {
+                const response = await fetch("https://e-vision-drive-main-beta.vercel.app/user/rtvstations", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
@@ -151,7 +151,6 @@
             const container = document.getElementById("Stations");
             container.innerHTML = "";
 
-            
             if (data.length === 0) {
                 container.innerHTML = "<p style='color:white'>No Stations Available!</p>";
                 return;
@@ -159,7 +158,7 @@
             
             for (const station of data) {
 
-                const isBooking = await fetch(`https://e-vision-drive-main.vercel.app/stations/${station._id}/isbooking`,{
+                const isBooking = await fetch(`https://e-vision-drive-main-beta.vercel.app/stations/${station._id}/isbooking`,{
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
