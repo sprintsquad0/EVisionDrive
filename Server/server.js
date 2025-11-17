@@ -441,11 +441,12 @@ app.get("/user/profiledata/:Username", async (req, res) => {
     res.status(500).json({ message: "Failed to get user profile data!", error: e.message });
   }
 });
-app.get("/admin/profiledata/:Username", async (req, res) => {
+app.get("/admin/Profiledata/:Username", async (req, res) => {
   try {
-    const { Username } = req.params; // Extracts Username from the URL
+    const { Username } = req.params;
+    console.log(Username)// Extracts Username from the URL
     const data = await AdminRegisters.findOne({ Username }); // findOne instead of find (returns a single user)
-
+    
     if (!data) {
       return res.status(404).json({ message: "Admin not found" });
     }
