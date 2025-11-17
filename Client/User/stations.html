@@ -125,7 +125,7 @@
         async function RetrieveData() {
             try {
                 spinner.style.display="block"
-                const response = await fetch("https://e-vision-drive-q4p2.vercel.app/user/rtvstations", {
+                const response = await fetch("https://e-vision-drive-main.vercel.app/user/rtvstations", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
@@ -159,7 +159,7 @@
             
             for (const station of data) {
 
-                const isBooking = await fetch(`https://e-vision-drive-q4p2.vercel.app/stations/${station._id}/isbooking`,{
+                const isBooking = await fetch(`https://e-vision-drive-main.vercel.app/stations/${station._id}/isbooking`,{
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
