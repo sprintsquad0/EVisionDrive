@@ -420,7 +420,7 @@
                     const pass = document.getElementById("password").value;
 
                     try {
-                        const response = await fetch("https://e-vision-drive-q4p2.vercel.app/userlogin", {
+                        const response = await fetch("https://e-vision-drive-main.vercel.app/userlogin", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
@@ -453,7 +453,7 @@
                     const phone = document.getElementById("phone").value;
                     const uname = document.getElementById("username").value;
                     const pass = document.getElementById("password").value;
-                    const response = await fetch("https://e-vision-drive-q4p2.vercel.app/userreg", {
+                    const response = await fetch("https://e-vision-drive-main.vercel.app/userreg", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ Username: uname, Password: pass, Phone: phone, Mail: email, Name: name })
@@ -476,7 +476,7 @@
                     const names = document.getElementById("adminName").value;
 
                     
-                    const res=await fetch("https://e-vision-drive-q4p2.vercel.app/admin-signup-otp", {
+                    const res=await fetch("https://e-vision-drive-main.vercel.app/admin-signup-otp", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ Mail: mail})
@@ -496,7 +496,7 @@
                     }
 
                 
-                    const response = await fetch("https://e-vision-drive-q4p2.vercel.app/adminreg", {
+                    const response = await fetch("https://e-vision-drive-main.vercel.app/adminreg", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ Username: uname, Password: pass, Mail: mail, Phone: phone, Name: names })
@@ -514,7 +514,7 @@
                 } else if (currentRole === "admin" && currentMode === "login") {
                     const pass = document.getElementById("adminPassword").value;
                     const uname = document.getElementById("adminUsername").value;
-                    const response = await fetch("https://e-vision-drive-q4p2.vercel.app/adminlogin", {
+                    const response = await fetch("https://e-vision-drive-main.vercel.app/adminlogin", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ Username: uname, Password: pass })
