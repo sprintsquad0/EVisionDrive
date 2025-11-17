@@ -175,7 +175,7 @@
       }
 
       try {
-        const res = await fetch(`https://e-vision-drive-q4p2.vercel.app/api/available-slots?stationId=${stationId}&date=${date}`);
+        const res = await fetch(`https://e-vision-drive-main.vercel.app/api/available-slots?stationId=${stationId}&date=${date}`);
         const data = await res.json();
 
         const allSlots = [
@@ -243,7 +243,7 @@
       }
 
       try {
-        const res = await fetch("https://e-vision-drive-q4p2.vercel.app/call-otp", {
+        const res = await fetch("https://e-vision-drive-main.vercel.app/call-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ to: phone }),
@@ -339,7 +339,7 @@
       };
 
       try {
-        const res = await fetch("https://e-vision-drive-q4p2.vercel.app/api/book-slot", {
+        const res = await fetch("https://e-vision-drive-main.vercel.app/api/book-slot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(bookingData),
