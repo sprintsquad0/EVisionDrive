@@ -675,24 +675,7 @@ app.get('/api/available-slots', async (req, res) => {
   }
 });
 
-/*
-app.post("/check-email", async (req, res) => {
-  const { Mail } = req.body;
 
-  try {
-    const user = await UserRegisters.findOne({ Mail });  // 🔍 check if email exists
-
-    if (user) {
-      res.json({ registered: true });
-    } else {
-      res.json({ registered: false });
-    }
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-*/
 // Update schema to store OTP
 const forgetpassOTPSchema = new mongoose.Schema({
   email: String,
@@ -734,7 +717,7 @@ app.post("/send-otp", async (req, res) => {
 
   try {
     await transporter.sendMail({
-    from: "duotechcodex@gmail.com", // Verified Sender In SendGrid
+    from: "shaikumaralthaf003@gmail.com", // Verified Sender In SendGrid
     to: Mail,
     subject: "🔐 Your One-Time Password (OTP)",
     text: `Hello ${ForgetpassOTP.Name},
