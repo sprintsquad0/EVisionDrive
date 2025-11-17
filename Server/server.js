@@ -443,7 +443,10 @@ app.get("/user/profiledata/:Username", async (req, res) => {
 });
 
 app.get("/admin/profiledata/:Username", async (req, res) => {
+  console.log("backend")
+  
   try {
+     console.log("backend - try")
     const { Username } = req.params; // Extracts Username from the URL
     const data = await AdminRegisters.findOne({ Username }); // findOne instead of find (returns a single user)
 
