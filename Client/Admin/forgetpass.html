@@ -131,7 +131,7 @@
         
         message.textContent="Loading..." ;
 
-        const response = await fetch("https://e-vision-drive-q4p2.vercel.app/send-otp/admin", {
+        const response = await fetch("https://e-vision-drive-main.vercel.app/send-otp/admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email })
@@ -161,7 +161,7 @@
         const email = document.getElementById('email').value;
         const message = document.getElementById('message');
 
-        const response = await fetch("https://e-vision-drive-q4p2.vercel.app/verify-otp/admin", {
+        const response = await fetch("https://e-vision-drive-main.vercel.app/verify-otp/admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email, otp })
@@ -193,7 +193,7 @@
             return;
         }
 
-        const response = await fetch("https://e-vision-drive-q4p2.vercel.app/reset-password/admin", {
+        const response = await fetch("https://e-vision-drive-main.vercel.app/reset-password/admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Mail: email, newPassword: newPass })
