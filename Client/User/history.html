@@ -139,7 +139,7 @@
         async function RetrieveHistory() {
             try {
                 spinner.style.display = "block";
-                const response = await fetch(`https://e-vision-drive-q4p2.vercel.app/${username}/historybookings`);
+                const response = await fetch(`https://e-vision-drive-main.vercel.app/${username}/historybookings`);
                 if (!response.ok) throw new Error(`Failed to fetch data: ${response.status}`);
                 historyData = await response.json();
                 historyData.sort((a, b) => new Date(b.date) - new Date(a.date));
