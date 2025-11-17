@@ -133,6 +133,8 @@
             // Fetch username from localStorage
             let Usernames = localStorage.getItem("AdminUsername");
 
+            console.log("outside try - Fetching profile data for:", Usernames);
+            
             if (!Usernames) {
                 console.error("AdminUsername is missing in localStorage!");
                 alert("Session expired. Please log in again.");
