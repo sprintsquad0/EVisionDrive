@@ -149,7 +149,7 @@ function addStationLink(station, isBooking) {
 
    link.style.background = "red";
   link.style.color = "#fff";
-  fetch(`https://e-vision-drive-main.vercel.app/stations/${station._id}/bookings/unseen`)
+  fetch(`https://e-vision-drive-main-beta.vercel.app/stations/${station._id}/bookings/unseen`)
     .then(res => res.json())
     .then(data => {
       const count = data.count;
@@ -201,19 +201,19 @@ function addStationLink(station, isBooking) {
   link.addEventListener("click", () => {
     const badge = link.querySelector(".booking-badge");
     if (badge) badge.remove();
-    fetch(`https://e-vision-drive-main.vercel.app/stations/${station._id}/bookings/mark-seen`, { method: "POST" })
+    fetch(`https://e-vision-drive-main-beta.vercel.app/stations/${station._id}/bookings/mark-seen`, { method: "POST" })
       .catch(err => console.error(err));
   });
 }
 
   window.addEventListener("DOMContentLoaded", () => {
-  fetch("https://e-vision-drive-main.vercel.app/api/stations")
+  fetch("https://e-vision-drive-main-beta.vercel.app/api/stations")
     .then(res => res.json())
     .then(data => {
       console.log("Stations data:", data);
       data.forEach(station => {
         
-        fetch(`https://e-vision-drive-main.vercel.app/stations/${station._id}/isbooking`)
+        fetch(`https://e-vision-drive-main-beta.vercel.app/stations/${station._id}/isbooking`)
           .then(res => res.json())
           .then(isbookingData => {
             const isbooking = isbookingData.message;
